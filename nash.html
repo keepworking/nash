@@ -525,20 +525,25 @@
     }
 
     function getTopLevelNextSiblingOfCurrentPosition(useSelectionRange = null) {
+
       let nextSibling = null;
       let range = useSelectionRange;
 
       if (!range) {
+
         let selection = window.getSelection();
+
         if (selection?.rangeCount) {
           range = selection.getRangeAt(0);
         }
       }
 
       if (range) {
+
         let block = range.startContainer;
 
         if (block && block !== editor) {
+
           while (block.parentNode && block.parentNode !== editor) {
             block = block.parentNode;
           }
@@ -548,6 +553,7 @@
           }
         }
       }
+
       return nextSibling;
     }
 
@@ -570,9 +576,9 @@
 
     function insertCode() {
 
-      let nextSibling = getTopLevelNextSiblingOfCurrentPosition();
-      let pre = document.createElement("pre");
-      let code = document.createElement("code");
+      const nextSibling = getTopLevelNextSiblingOfCurrentPosition();
+      const pre = document.createElement("pre");
+      const code = document.createElement("code");
       code.setAttribute("contenteditable", "true");
       code.style = "white-space: pre;"
       code.innerText = "\n";
@@ -582,7 +588,7 @@
 
       if (!nextSibling) {
 
-        p = document.createElement("p");
+        const p = document.createElement("p");
         p.appendChild(document.createElement("br"));
         editor.insertBefore(p, nextSibling);
       }
@@ -864,6 +870,16 @@
       document.title = filename.innerHTML.trim() || "Nash Note";
     }
 
+    /*function printSelectionInfo() {
+      const selection = window.getSelection();
+      console.log("selection: ", selection);
+
+      if (selection?.rangeCount) {
+        const range = selection.getRangeAt(0);
+        console.log("range: ", range);
+      }
+    }*/
+
     function keydownHandler(e) {
 
       if (e.key === 'Enter' && !e.shiftKey) {
@@ -879,32 +895,41 @@
 
             if (block.nodeType === Node.ELEMENT_NODE && block.nodeName === "CODE") {
 
-              textNode = range.startContainer;
-              //console.log('txtnode ', textNode.nodeName);
+              const textNode = range.startContainer;
 
               if (textNode.nodeName === "CODE") {
 
-                textNode.appendChild(document.createElement("br"));
+                //printSelectionInfo();
+
+                if (textNode.childNodes.length > range.startOffset) {
+                  textNode.insertBefore(document.createElement("br"), textNode.childNodes[range.startOffset]);
+                } else {
+                  textNode.appendChild(document.createElement("br"));
+                }
                 setCaret(textNode, range.startOffset + 1);
               } else if (textNode.nodeName === "BR") {
 
-                textNode.parentNode.insertBefore(document.createElement("br"), textNode.nextSibling);
-                setCaret(textNode.parentNode, range.startOffset + 1);
+                //printSelectionInfo();
+                const brNode = document.createElement("br");
+                textNode.parentNode.insertBefore(brNode, textNode.nextSibling);
+                setCaret(brNode, 0);
               } else if (textNode.nodeType === Node.TEXT_NODE && textNode.nodeName == "#text") {
 
-                text1 = textNode.textContent.substring(0, range.startOffset);
-                text2 = textNode.textContent.substring(range.startOffset);
-                newTextNode = (text2 && text2 !== "") ? document.createTextNode(text2) : null;
-                parentNode = textNode.parentNode;
-                nextSibling = textNode.nextSibling;
-                brNode = document.createElement("br");
+                //printSelectionInfo();
+                const text1 = textNode.textContent.substring(0, range.startOffset);
+                const text2 = textNode.textContent.substring(range.startOffset);
+                const newTextNode = (text2 && text2 !== "") ? document.createTextNode(text2) : null;
+                const parentNode = textNode.parentNode;
+                const nextSibling = textNode.nextSibling;
+                const brNode = document.createElement("br");
                 parentNode.insertBefore(brNode, nextSibling);
-                //console.log('t1 ', text1, ': t2', text2);
 
                 if (text1 && text1 !== "") {
-                  textNode.textContent = text1;
+
+                  if (textNode.textContent !== text1) {
+                    textNode.textContent = text1;
+                  }
                 } else {
-                  //parentNode.insertBefore(document.createElement("br"), nextSibling);
                   parentNode.removeChild(textNode);
                 }
 
@@ -914,8 +939,19 @@
                   setCaret(newTextNode, 0);
                 } else if (text1 && text1 !== "") {
 
-                  parentNode.insertBefore(document.createElement("br"), nextSibling);
-                  setCaret(brNode, 0);
+                  if (!nextSibling) {
+
+                    const brNode2 = document.createElement("br");
+                    parentNode.insertBefore(brNode2, nextSibling);
+                    setCaret(parentNode, [...parentNode.childNodes].indexOf(brNode2));
+                  } else {
+                    setCaret(parentNode, [...parentNode.childNodes].indexOf(nextSibling));
+                  }
+                } else {
+
+                  const brNode2 = document.createElement("br");
+                  parentNode.insertBefore(brNode2, nextSibling);
+                  setCaret(brNode2, 0);
                 }
               }
               e.stopImmediatePropagation();
