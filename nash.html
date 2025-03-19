@@ -524,38 +524,49 @@
       }
     }
 
-    function insertImage(event) {
-      let file = event.target.files[0];
-      if (file) {
-        let reader = new FileReader();
-        reader.onload = function (e) {
-          let img = document.createElement("img");
-          img.src = e.target.result;
-          document.querySelector("#editor").appendChild(img);
-        };
-        reader.readAsDataURL(file);
+    function getTopLevelNextSiblingOfCurrentPosition(useSelectionRange = null) {
+      let nextSibling = null;
+      let range = useSelectionRange;
+
+      if (!range) {
+        let selection = window.getSelection();
+        if (selection?.rangeCount) {
+          range = selection.getRangeAt(0);
+        }
       }
-    }
 
-    function insertCode() {
-      const selection = window.getSelection();
-      nextSibling = null;
-      addBr = true;
-
-      if (selection.rangeCount) {
-        const range = selection.getRangeAt(0);
+      if (range) {
         let block = range.startContainer;
 
         if (block && block !== editor) {
           while (block.parentNode && block.parentNode !== editor) {
             block = block.parentNode;
           }
+
           if (block.parentNode === editor) {
             nextSibling = block.nextSibling;
-            addBr = !nextSibling;
           }
         }
       }
+      return nextSibling;
+    }
+
+    function insertImage(event) {
+      let file = event.target.files[0];
+      if (file) {
+        let reader = new FileReader();
+        const nextSibling = getTopLevelNextSiblingOfCurrentPosition(lastValidSelectionRange);
+        reader.onload = function (e) {
+          let img = document.createElement("img");
+          img.src = e.target.result;
+          document.querySelector("#editor").insertBefore(img, nextSibling);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function insertCode() {
+      let nextSibling = getTopLevelNextSiblingOfCurrentPosition();
       let pre = document.createElement("pre");
       let code = document.createElement("code");
       code.setAttribute("contenteditable", "true");
@@ -565,7 +576,7 @@
       editor.insertBefore(pre, nextSibling);
       setCaret(code, 0);
 
-      if (addBr) {
+      if (!nextSibling) {
         p = document.createElement("p");
         p.appendChild(document.createElement("br"));
         editor.insertBefore(p, nextSibling);
@@ -925,6 +936,20 @@
       e.returnValue = '';
     }
 
+    lastValidSelectionRange = null;
+
+    document.onselectionchange = () => {
+      const selection = document.getSelection();
+
+      if (selection?.rangeCount) {
+
+        range = selection.getRangeAt(0);
+
+        if (editor.contains(range.startContainer)) {
+          lastValidSelectionRange = range;
+        }
+      }
+    };
 
     editor = document.getElementById('editor');
     filename = document.getElementById('filename');
