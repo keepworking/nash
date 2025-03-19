@@ -23,6 +23,9 @@
 
       --attribution-color: #bbb;
 
+      --code-bg-color: #fff;
+      --code-text-color: #333;
+
       /* text background colors */
       --note-text-color-1: #000000;
       /* black */
@@ -74,8 +77,11 @@
         --note-bg-color: #333;
         --note-placeholder-color: #555;
 
+        --code-bg-color: #fff;
+        --code-text-color: #333;
+
         /*
-               TODO: choose nicer colers :-)
+               TODO: choose nicer colors :-)
             */
 
         /* text background colors */
@@ -291,6 +297,13 @@
       content: "🔗";
     }
 
+    #editor pre code {
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
+      background: var(--code-bg-color);
+      color: var(--code-text-color);
+      display: block;
+    }
 
     #editor:empty::before,
     #editor p:empty::before {
@@ -425,6 +438,7 @@
           </div>
         </div>
       </div>
+      <button onclick="insertCode()">🖥</button>
 
       <div id="splitbar">|</div>
       <!-- Block conversion -->
@@ -521,6 +535,18 @@
         };
         reader.readAsDataURL(file);
       }
+    }
+
+    function insertCode() {
+      let pre = document.createElement("pre");
+      let code = document.createElement("code");
+      code.setAttribute("contenteditable", "true");
+      //code.style.cssText = "white-space: pre;"
+      code.innerText = " ";
+      pre.appendChild(code);
+      editor.appendChild(pre);
+      setCaret(code, 0);
+      code.appendChild(document.createElement("br"));
     }
 
     // Toggle dropdown visibility
@@ -801,6 +827,31 @@
 
     function keydownHandler(e) {
       if (e.key === 'Enter' && !e.shiftKey) {
+        const selection = window.getSelection();
+
+        if (selection.rangeCount) {
+          const range = selection.getRangeAt(0);
+          let block = range.startContainer;
+          while (block && block !== editor) {
+            if (block.nodeType === Node.ELEMENT_NODE && block.nodeName === 'CODE') {
+              textNode = range.startContainer;
+              if (textNode.nodeType === Node.TEXT_NODE && textNode.nodeName == "#text") {
+                text1 = textNode.textContent.substring(0, range.startOffset);
+                text2 = textNode.textContent.substring(range.startOffset);
+                nextSibling = textNode.nextSibling;
+                newTextNode = document.createTextNode(text2);
+                textNode.parentNode.insertBefore(document.createElement("br"), nextSibling);
+                textNode.textContent = text1;
+                textNode.parentNode.insertBefore(newTextNode, nextSibling);
+                setCaret(newTextNode, 0);
+              }
+              e.stopImmediatePropagation();
+              e.preventDefault();
+              return;
+            }
+            block = block.parentNode;
+          }
+        }
         e.preventDefault();
         splitBlock();
       }
