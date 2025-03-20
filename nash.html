@@ -910,7 +910,6 @@
       });
     }
 
-
     // Normalize stray text nodes and nested blocks.
     function cleanEditor() {
       const editor = document.getElementById('editor');
@@ -1024,6 +1023,7 @@
         e.preventDefault();
         splitBlock();
       }
+
       if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'y')) {
         e.preventDefault();
       }
