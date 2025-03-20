@@ -443,6 +443,7 @@
       </div>
       <button onclick="insertText()"><b>T</b></button>
       <button onclick="insertCode()">🖥</button>
+      <button onclick="insertIframe()"><b>W</b></button>
 
       <div id="splitbar">|</div>
       <!-- Block conversion -->
@@ -637,6 +638,17 @@
       setCaret(code, 0);
     }
 
+    function insertIframe() {
+
+      const iframeHtml = prompt("iframe html");
+      if (!iframeHtml) return;
+      const nextSibling = getTopLevelNextSiblingOfCurrentPosition();
+      const div = document.createElement("div");
+      div.innerHTML = iframeHtml; // '<iframe width="560" height="315" src="https://www.youtube.com/embed/Up1Y9QqMXYU?si=M-V89NumCh4LwzJk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
+      editor.insertBefore(div, nextSibling);
+      setCaret(div, 0);
+    }
+
     // Toggle dropdown visibility
     function toggleDropdown(id) {
       const dropdown = document.getElementById(id);
@@ -680,20 +692,20 @@
           {
             acceptNode: function (node) {
 
-              let isCode = false;
+              let isRejectableTag = false;
               let nd = node;
 
               while (nd && nd.parentNode !== editor) {
-                if (nd.nodeName === "CODE") {
-                  isCode = true;
+                if (nd.nodeName === "CODE" || nd.nodeName === "IFRAME") {
+                  isRejectableTag = true;
                   break;
                 }
                 nd = nd.parentNode;
               }
 
-              if (nd && nd.nodeName === "CODE") isCode = true;
+              if (nd && nd.nodeName === "CODE" || nd.nodeName === "IFRAME") isRejectableTag = true;
 
-              return !isCode && range.intersectsNode(node)
+              return !isRejectableTag && range.intersectsNode(node)
                 ? NodeFilter.FILTER_ACCEPT
                 : NodeFilter.FILTER_REJECT;
             }
@@ -801,11 +813,11 @@
       let node = selection.anchorNode;
       const editor = document.getElementById('editor');
       while (node && node.parentNode !== editor) {
-        if (node.nodeName === "CODE") return;
+        if (node.nodeName === "CODE" || node.nodeName === "IFRAME") return;
         node = node.parentNode;
       }
       if (!node || node === editor) return;
-      if (node.nodeName === "CODE") return;
+      if (node.nodeName === "CODE" || node.nodeName === "IFRAME") return;
       const newBlock = document.createElement(tag);
       while (node.firstChild) {
         if (
