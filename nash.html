@@ -626,6 +626,7 @@
     // Wrap only the selected portions of text nodes.
     // If selection is entirely within one text node, process it directly.
     function wrapRangeText(range, tagName, style, hook) {
+
       const textNodes = [];
       if (range.commonAncestorContainer.nodeType === Node.TEXT_NODE) {
         textNodes.push(range.commonAncestorContainer);
@@ -635,7 +636,21 @@
           NodeFilter.SHOW_TEXT,
           {
             acceptNode: function (node) {
-              return range.intersectsNode(node)
+
+              let isCode = false;
+              let nd = node;
+
+              while (nd && nd.parentNode !== editor) {
+                if (nd.nodeName === "CODE") {
+                  isCode = true;
+                  break;
+                }
+                nd = nd.parentNode;
+              }
+
+              if (nd && nd.nodeName === "CODE") isCode = true;
+
+              return !isCode && range.intersectsNode(node)
                 ? NodeFilter.FILTER_ACCEPT
                 : NodeFilter.FILTER_REJECT;
             }
@@ -743,9 +758,11 @@
       let node = selection.anchorNode;
       const editor = document.getElementById('editor');
       while (node && node.parentNode !== editor) {
+        if (node.nodeName === "CODE") return;
         node = node.parentNode;
       }
       if (!node || node === editor) return;
+      if (node.nodeName === "CODE") return;
       const newBlock = document.createElement(tag);
       while (node.firstChild) {
         if (
