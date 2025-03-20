@@ -23,7 +23,7 @@
 
       --attribution-color: #bbb;
 
-      --code-bg-color: #fff;
+      --code-bg-color: #e5e4e2;
       --code-text-color: #333;
 
       /* text background colors */
@@ -77,8 +77,8 @@
         --note-bg-color: #333;
         --note-placeholder-color: #555;
 
-        --code-bg-color: #fff;
-        --code-text-color: #333;
+        --code-bg-color: #36454f;
+        --code-text-color: #fff;
 
         /*
                TODO: choose nicer colors :-)
@@ -303,6 +303,9 @@
       background: var(--code-bg-color);
       color: var(--code-text-color);
       display: block;
+      margin: 0;
+      padding: 8px;
+      border-radius: 6px;
     }
 
     #editor:empty::before,
@@ -438,6 +441,7 @@
           </div>
         </div>
       </div>
+      <button onclick="insertText()"><b>T</b></button>
       <button onclick="insertCode()">🖥</button>
 
       <div id="splitbar">|</div>
@@ -524,6 +528,39 @@
       }
     }
 
+    function getTopLevelNodeOfCurrentPosition(useSelectionRange = null) {
+
+      let topNode = null;
+      let range = useSelectionRange;
+
+      if (!range) {
+
+        let selection = window.getSelection();
+
+        if (selection?.rangeCount) {
+          range = selection.getRangeAt(0);
+        }
+      }
+
+      if (range) {
+
+        let block = range.startContainer;
+
+        if (block && block !== editor) {
+
+          while (block.parentNode && block.parentNode !== editor) {
+            block = block.parentNode;
+          }
+
+          if (block.parentNode === editor) {
+            topNode = block;
+          }
+        }
+      }
+
+      return topNode;
+    }
+
     function getTopLevelNextSiblingOfCurrentPosition(useSelectionRange = null) {
 
       let nextSibling = null;
@@ -574,6 +611,19 @@
       }
     }
 
+    function insertText() {
+
+      const topNode = getTopLevelNodeOfCurrentPosition();
+
+      if (!topNode || topNode.nodeName !== "P" ) {
+
+        const p = document.createElement("p");
+        p.appendChild(document.createElement("br"));
+        editor.insertBefore(p, topNode?.nextSibling);
+        setCaret(p, 0);
+      }
+    }
+
     function insertCode() {
 
       const nextSibling = getTopLevelNextSiblingOfCurrentPosition();
@@ -585,13 +635,6 @@
       pre.appendChild(code);
       editor.insertBefore(pre, nextSibling);
       setCaret(code, 0);
-
-      if (!nextSibling) {
-
-        const p = document.createElement("p");
-        p.appendChild(document.createElement("br"));
-        editor.insertBefore(p, nextSibling);
-      }
     }
 
     // Toggle dropdown visibility
