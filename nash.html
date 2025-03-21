@@ -608,6 +608,7 @@
       const divNode = document.createElement("div");
       divNode.innerHTML = `<img src=\"${url}\" />`;
       divNode.setAttribute("class", "image-link");
+      divNode.setAttribute("contenteditable", "false");
       editor.insertBefore(divNode, nextSibling);
     }
 
@@ -625,9 +626,8 @@
           audio.src = e.target.result;
           audio.setAttribute("controls", "");
           divNode.setAttribute("class", "embedded-local-audio");
-          divNode.setAttribute("contenteditable", "plaintext-only");
+          divNode.setAttribute("contenteditable", "false");
           divNode.appendChild(audio);
-          divNode.appendChild(document.createElement("br"));
           document.querySelector("#editor").insertBefore(audio, nextSibling);
         };
         reader.readAsDataURL(file);
@@ -640,8 +640,9 @@
       if (!url) return;
       const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
       const divNode = document.createElement("div");
-      divNode.innerHTML = `<audio controls src=\"${url}\"></audio><br />`;
+      divNode.innerHTML = `<audio controls src=\"${url}\"></audio>`;
       divNode.setAttribute("class", "audio-link");
+      divNode.setAttribute("contenteditable", "false");
       editor.insertBefore(divNode, nextSibling);
     }
 
@@ -651,8 +652,9 @@
       if (!url) return;
       const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
       const divNode = document.createElement("div");
-      divNode.innerHTML = `<video controls src=\"${url}\"></video><br />`;
+      divNode.innerHTML = `<video controls src=\"${url}\"></video>`;
       divNode.setAttribute("class", "video-link");
+      divNode.setAttribute("contenteditable", "false");
       editor.insertBefore(divNode, nextSibling);
     }
 
@@ -692,6 +694,7 @@
       const divNode = document.createElement("div");
       divNode.innerHTML = iframeHtml;
       divNode.setAttribute("class", "embedded-content");
+      divNode.setAttribute("contenteditable", "false");
       editor.insertBefore(divNode, nextSibling);
       setCaret(divNode, 0);
     }
