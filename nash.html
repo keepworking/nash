@@ -723,15 +723,11 @@
     function insertText() {
 
       const topNode = getTopLevelNodeOfCurrentPosition();
-
-      if (!topNode || topNode.nodeName !== "P") {
-
-        const p = document.createElement("p");
-        p.setAttribute("class", "text-block");
-        p.appendChild(document.createElement("br"));
-        editor.insertBefore(p, topNode?.nextSibling);
-        setCaret(p, 0);
-      }
+      const p = document.createElement("p");
+      p.setAttribute("class", "text-block");
+      p.appendChild(document.createElement("br"));
+      editor.insertBefore(p, topNode?.nextSibling);
+      setCaret(p, 0);
     }
 
     function insertCode() {
