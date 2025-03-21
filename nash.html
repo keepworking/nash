@@ -461,16 +461,20 @@
 
     <div id="editorContainer" class="thin-line">
       <div id="editor" contenteditable="true">
-        <p></p>
+        <p class="text-block"></p>
       </div>
     </div>
 
     <div id="footer">
       <small><a href="https://github.com/flaviup">flaviup@github</a></small>
+      <br/>
+      <small>Nash 0.1</small>
     </div>
   </div>
 
   <script>
+
+    const NON_STYLABLE_NODE_NAMES = ["CODE", "IFRAME"];
 
     function setEditMode(editMode) {
       let editor = document.getElementById("editor");
@@ -562,50 +566,18 @@
       return topNode;
     }
 
-    function getTopLevelNextSiblingOfCurrentPosition(useSelectionRange = null) {
-
-      let nextSibling = null;
-      let range = useSelectionRange;
-
-      if (!range) {
-
-        let selection = window.getSelection();
-
-        if (selection?.rangeCount) {
-          range = selection.getRangeAt(0);
-        }
-      }
-
-      if (range) {
-
-        let block = range.startContainer;
-
-        if (block && block !== editor) {
-
-          while (block.parentNode && block.parentNode !== editor) {
-            block = block.parentNode;
-          }
-
-          if (block.parentNode === editor) {
-            nextSibling = block.nextSibling;
-          }
-        }
-      }
-
-      return nextSibling;
-    }
-
     function insertImage(event) {
 
-      let file = event.target.files[0];
+      const file = event.target.files[0];
 
       if (file) {
 
         let reader = new FileReader();
-        const nextSibling = getTopLevelNextSiblingOfCurrentPosition(lastValidSelectionRange);
+        const nextSibling = getTopLevelNodeOfCurrentPosition(lastValidSelectionRange)?.nextSibling;
         reader.onload = function (e) {
           let img = document.createElement("img");
           img.src = e.target.result;
+          img.setAttribute("class", "embedded-local-image");
           document.querySelector("#editor").insertBefore(img, nextSibling);
         };
         reader.readAsDataURL(file);
@@ -616,9 +588,10 @@
 
       const topNode = getTopLevelNodeOfCurrentPosition();
 
-      if (!topNode || topNode.nodeName !== "P" ) {
+      if (!topNode || topNode.nodeName !== "P") {
 
         const p = document.createElement("p");
+        p.setAttribute("class", "text-block");
         p.appendChild(document.createElement("br"));
         editor.insertBefore(p, topNode?.nextSibling);
         setCaret(p, 0);
@@ -627,12 +600,13 @@
 
     function insertCode() {
 
-      const nextSibling = getTopLevelNextSiblingOfCurrentPosition();
+      const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
       const pre = document.createElement("pre");
       const code = document.createElement("code");
-      code.setAttribute("contenteditable", "true");
+      code.setAttribute("contenteditable", "plaintext-only");
       code.style = "white-space: pre;"
       code.innerText = "\n";
+      pre.setAttribute("class", "code-block");
       pre.appendChild(code);
       editor.insertBefore(pre, nextSibling);
       setCaret(code, 0);
@@ -642,10 +616,11 @@
 
       const iframeHtml = prompt("iframe html");
       if (!iframeHtml) return;
-      const nextSibling = getTopLevelNextSiblingOfCurrentPosition();
-      const div = document.createElement("div");
-      div.innerHTML = iframeHtml; // '<iframe width="560" height="315" src="https://www.youtube.com/embed/Up1Y9QqMXYU?si=M-V89NumCh4LwzJk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
-      editor.insertBefore(div, nextSibling);
+      const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
+      const divNode = document.createElement("div");
+      divNode.innerHTML = iframeHtml; // '<iframe width="560" height="315" src="https://www.youtube.com/embed/Up1Y9QqMXYU?si=M-V89NumCh4LwzJk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
+      divNode.setAttribute("class", "embedded-iframe");
+      editor.insertBefore(divNode, nextSibling);
       setCaret(div, 0);
     }
 
@@ -696,14 +671,14 @@
               let nd = node;
 
               while (nd && nd.parentNode !== editor) {
-                if (nd.nodeName === "CODE" || nd.nodeName === "IFRAME") {
+                if (NON_STYLABLE_NODE_NAMES.includes(nd.nodeName)) {
                   isRejectableTag = true;
                   break;
                 }
                 nd = nd.parentNode;
               }
 
-              if (nd && nd.nodeName === "CODE" || nd.nodeName === "IFRAME") isRejectableTag = true;
+              if (nd && NON_STYLABLE_NODE_NAMES.includes(nd.nodeName)) isRejectableTag = true;
 
               return !isRejectableTag && range.intersectsNode(node)
                 ? NodeFilter.FILTER_ACCEPT
@@ -813,11 +788,11 @@
       let node = selection.anchorNode;
       const editor = document.getElementById('editor');
       while (node && node.parentNode !== editor) {
-        if (node.nodeName === "CODE" || node.nodeName === "IFRAME") return;
+        if (NON_STYLABLE_NODE_NAMES.includes(node.nodeName)) return;
         node = node.parentNode;
       }
       if (!node || node === editor) return;
-      if (node.nodeName === "CODE" || node.nodeName === "IFRAME") return;
+      if (NON_STYLABLE_NODE_NAMES.includes(node.nodeName)) return;
       const newBlock = document.createElement(tag);
       while (node.firstChild) {
         if (
