@@ -745,14 +745,17 @@
     function insertCode() {
 
       const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
+      const divNode = document.createElement("div");
       const pre = document.createElement("pre");
       const code = document.createElement("code");
       code.setAttribute("contenteditable", "plaintext-only");
       code.style = "white-space: pre;"
       code.innerText = "\n";
-      pre.setAttribute("class", "code-block");
       pre.appendChild(code);
-      editor.insertBefore(pre, nextSibling);
+      divNode.appendChild(pre);
+      divNode.setAttribute("class", "code-block");
+      divNode.setAttribute("contenteditable", "true");
+      editor.insertBefore(divNode, nextSibling);
       setCaret(code, 0);
     }
 
