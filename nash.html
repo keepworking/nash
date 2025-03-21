@@ -135,7 +135,7 @@
 
     .editor-container {
       width: 100%;
-      max-width: 800px;
+      max-width: 900px;
       background: var(--note-bg-color);
       padding: 30px;
       border-radius: 12px;
@@ -594,7 +594,7 @@
           let img = document.createElement("img");
           img.src = e.target.result;
           img.setAttribute("class", "embedded-local-image");
-          document.querySelector("#editor").insertBefore(img, nextSibling);
+          editor.insertBefore(img, nextSibling);
         };
         reader.readAsDataURL(file);
       }
@@ -605,11 +605,10 @@
       const url = prompt("Image URL");
       if (!url) return;
       const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
-      const divNode = document.createElement("div");
-      divNode.innerHTML = `<img src=\"${url}\" />`;
-      divNode.setAttribute("class", "image-link");
-      divNode.setAttribute("contenteditable", "false");
-      editor.insertBefore(divNode, nextSibling);
+      const img = document.createElement("img");
+      img.src = `${url}`;
+      img.setAttribute("class", "image-link");
+      editor.insertBefore(img, nextSibling);
     }
 
     function insertAudio(event) {
@@ -692,9 +691,9 @@
       if (!iframeHtml) return;
       const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
       const divNode = document.createElement("div");
-      divNode.innerHTML = iframeHtml;
+      divNode.innerHTML = `${iframeHtml}`;
       divNode.setAttribute("class", "embedded-content");
-      divNode.setAttribute("contenteditable", "false");
+      divNode.setAttribute("contenteditable", "true");
       editor.insertBefore(divNode, nextSibling);
       setCaret(divNode, 0);
     }
