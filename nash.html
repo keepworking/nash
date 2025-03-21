@@ -264,7 +264,6 @@
       text-align: left;
     }
 
-    /* 편집 영역 */
     #editor {
       border-radius: 12px;
       padding: 15px;
@@ -334,8 +333,14 @@
       border-radius: 12px;
     }
 
+    audio {
+      width: 100%;
+      display: block;
+      margin: 20px 0;
+    }
+
     video {
-      max-width: 100%;
+      width: 100%;
       height: auto;
       display: block;
       margin: 10px 0;
@@ -350,6 +355,38 @@
       background-color: var(--control-bg-color);
       color: var(--control-text-color);
       margin: 10px 0;
+    }
+
+    .embedded-local-audio,
+    .audio-link,
+    .video-link {
+      display: block;
+      position: relative;
+    }
+
+    .x-remover {
+      background-color: #aaa;
+      padding: 5px 9px;
+      color: #ff3b30;
+      display: none;
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin-top: -10px;
+      margin-right: -10px;
+      font-weight: 700;
+      border-radius: 50%;
+      border: 1px solid #333;
+      text-align: center;
+      line-height: 20px;
+      font-family: sans-serif;
+      cursor: default;
+    }
+
+    .embedded-local-audio:hover .x-remover,
+    .audio-link:hover .x-remover,
+    .video-link:hover .x-remover {
+      display: block;
     }
 
     @media print {
@@ -582,6 +619,23 @@
       return topNode;
     }
 
+    function createRemover() {
+
+      const divNode = document.createElement("div");
+      divNode.innerText = "✕";
+      divNode.addEventListener('click', function (e) {
+
+        const parentNode = e.target?.parentNode;
+
+        if (parentNode?.parentNode) {
+          parentNode.parentNode.removeChild(parentNode);
+        }
+      });
+      divNode.setAttribute("class", "x-remover");
+      divNode.setAttribute("contenteditable", "false");
+      return divNode;
+    }
+
     function insertImage(event) {
 
       const file = event.target.files[0];
@@ -591,7 +645,7 @@
         let reader = new FileReader();
         const nextSibling = getTopLevelNodeOfCurrentPosition(lastValidSelectionRange)?.nextSibling;
         reader.onload = function (e) {
-          let img = document.createElement("img");
+          const img = document.createElement("img");
           img.src = e.target.result;
           img.setAttribute("class", "embedded-local-image");
           editor.insertBefore(img, nextSibling);
@@ -621,13 +675,14 @@
         const nextSibling = getTopLevelNodeOfCurrentPosition(lastValidSelectionRange)?.nextSibling;
         reader.onload = function (e) {
           const divNode = document.createElement("div");
-          let audio = document.createElement("audio");
+          const audio = document.createElement("audio");
           audio.src = e.target.result;
           audio.setAttribute("controls", "");
+          divNode.appendChild(audio);
+          divNode.appendChild(createRemover());
           divNode.setAttribute("class", "embedded-local-audio");
           divNode.setAttribute("contenteditable", "false");
-          divNode.appendChild(audio);
-          document.querySelector("#editor").insertBefore(audio, nextSibling);
+          editor.insertBefore(divNode, nextSibling);
         };
         reader.readAsDataURL(file);
       }
@@ -639,7 +694,11 @@
       if (!url) return;
       const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
       const divNode = document.createElement("div");
-      divNode.innerHTML = `<audio controls src=\"${url}\"></audio>`;
+      const audio = document.createElement("audio");
+      audio.src = `${url}`;
+      audio.setAttribute("controls", "");
+      divNode.appendChild(audio);
+      divNode.appendChild(createRemover());
       divNode.setAttribute("class", "audio-link");
       divNode.setAttribute("contenteditable", "false");
       editor.insertBefore(divNode, nextSibling);
@@ -651,7 +710,11 @@
       if (!url) return;
       const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
       const divNode = document.createElement("div");
-      divNode.innerHTML = `<video controls src=\"${url}\"></video>`;
+      const video = document.createElement("video");
+      video.src = `${url}`;
+      video.setAttribute("controls", "");
+      divNode.appendChild(video);
+      divNode.appendChild(createRemover());
       divNode.setAttribute("class", "video-link");
       divNode.setAttribute("contenteditable", "false");
       editor.insertBefore(divNode, nextSibling);
