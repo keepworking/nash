@@ -334,6 +334,14 @@
       border-radius: 12px;
     }
 
+    video {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 10px 0;
+      border-radius: 12px;
+    }
+
     .thin-line::before {
       content: "";
       display: block;
@@ -451,6 +459,7 @@
       <input type="file" id="audioUpload" accept="audio/*" onclick="this.value = null" onchange="insertAudio(event)">
 
       <button onclick="insertAudioLink()">🔊</button>
+      <button onclick="insertVideoLink()">📽</button>
 
       <div id="splitbar">|</div>
       <!-- Block conversion -->
@@ -633,6 +642,17 @@
       const divNode = document.createElement("div");
       divNode.innerHTML = `<audio controls src=\"${url}\"></audio><br />`;
       divNode.setAttribute("class", "audio-link");
+      editor.insertBefore(divNode, nextSibling);
+    }
+
+    function insertVideoLink() {
+
+      const url = prompt("Video URL");
+      if (!url) return;
+      const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
+      const divNode = document.createElement("div");
+      divNode.innerHTML = `<video controls src=\"${url}\"></video><br />`;
+      divNode.setAttribute("class", "video-link");
       editor.insertBefore(divNode, nextSibling);
     }
 
