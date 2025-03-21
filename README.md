@@ -23,6 +23,7 @@ TODO:
 - Ebook embedding (?)
 - Source code text highlighting
 - Html embedding (as iframe srcdoc="...")
+- Embedded page resizing
 - Audio recording
 - Video embedding (?)
 - Better text editing
