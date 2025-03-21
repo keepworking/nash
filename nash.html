@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 
 <head>
   <meta charset="UTF-8">
@@ -377,6 +377,8 @@
       <label for="imageUpload">📷</label>
       <input type="file" id="imageUpload" accept="image/*" onclick="this.value = null" onchange="insertImage(event)">
 
+      <button onclick="insertImageLink()">🖼</button>
+
       <div class="dropdown">
         <button onclick="toggleDropdown('textColorDropdown')">Color</button>
         <div id="textColorDropdown" class="dropdown-content">
@@ -443,7 +445,7 @@
       </div>
       <button onclick="insertText()"><b>T</b></button>
       <button onclick="insertCode()">🖥</button>
-      <button onclick="insertIframe()"><b>W</b></button>
+      <button onclick="insertEmbeddedContent()">🗂</button>
 
       <div id="splitbar">|</div>
       <!-- Block conversion -->
@@ -584,6 +586,18 @@
       }
     }
 
+    function insertImageLink() {
+
+      const url = prompt("Image URL");
+      if (!url) return;
+      const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
+      const divNode = document.createElement("div");
+      divNode.innerHTML = `<img src=\"${url}\" />`;
+      divNode.setAttribute("class", "image-link");
+      editor.insertBefore(divNode, nextSibling);
+      setCaret(div, 0);
+    }
+
     function insertText() {
 
       const topNode = getTopLevelNodeOfCurrentPosition();
@@ -612,14 +626,14 @@
       setCaret(code, 0);
     }
 
-    function insertIframe() {
+    function insertEmbeddedContent() {
 
-      const iframeHtml = prompt("iframe html");
+      const iframeHtml = prompt("Embedded HTML (iframe)");
       if (!iframeHtml) return;
       const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
       const divNode = document.createElement("div");
-      divNode.innerHTML = iframeHtml; // '<iframe width="560" height="315" src="https://www.youtube.com/embed/Up1Y9QqMXYU?si=M-V89NumCh4LwzJk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
-      divNode.setAttribute("class", "embedded-iframe");
+      divNode.innerHTML = iframeHtml;
+      divNode.setAttribute("class", "embedded-content");
       editor.insertBefore(divNode, nextSibling);
       setCaret(div, 0);
     }
