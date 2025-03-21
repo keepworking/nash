@@ -447,6 +447,11 @@
       <button onclick="insertCode()">🖥</button>
       <button onclick="insertEmbeddedContent()">🗂</button>
 
+      <label for="audioUpload">🔈</label>
+      <input type="file" id="audioUpload" accept="audio/*" onclick="this.value = null" onchange="insertAudio(event)">
+
+      <button onclick="insertAudioLink()">🔊</button>
+
       <div id="splitbar">|</div>
       <!-- Block conversion -->
       <div class="dropdown">
@@ -595,7 +600,40 @@
       divNode.innerHTML = `<img src=\"${url}\" />`;
       divNode.setAttribute("class", "image-link");
       editor.insertBefore(divNode, nextSibling);
-      setCaret(div, 0);
+    }
+
+    function insertAudio(event) {
+
+      const file = event.target.files[0];
+
+      if (file) {
+
+        let reader = new FileReader();
+        const nextSibling = getTopLevelNodeOfCurrentPosition(lastValidSelectionRange)?.nextSibling;
+        reader.onload = function (e) {
+          const divNode = document.createElement("div");
+          let audio = document.createElement("audio");
+          audio.src = e.target.result;
+          audio.setAttribute("controls", "");
+          divNode.setAttribute("class", "embedded-local-audio");
+          divNode.setAttribute("contenteditable", "plaintext-only");
+          divNode.appendChild(audio);
+          divNode.appendChild(document.createElement("br"));
+          document.querySelector("#editor").insertBefore(audio, nextSibling);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function insertAudioLink() {
+
+      const url = prompt("Audio URL");
+      if (!url) return;
+      const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
+      const divNode = document.createElement("div");
+      divNode.innerHTML = `<audio controls src=\"${url}\"></audio><br />`;
+      divNode.setAttribute("class", "audio-link");
+      editor.insertBefore(divNode, nextSibling);
     }
 
     function insertText() {
@@ -635,7 +673,7 @@
       divNode.innerHTML = iframeHtml;
       divNode.setAttribute("class", "embedded-content");
       editor.insertBefore(divNode, nextSibling);
-      setCaret(div, 0);
+      setCaret(divNode, 0);
     }
 
     // Toggle dropdown visibility
