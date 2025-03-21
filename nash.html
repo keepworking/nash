@@ -357,7 +357,9 @@
       margin: 10px 0;
     }
 
+    .embedded-local-image,
     .embedded-local-audio,
+    .image-link,
     .audio-link,
     .video-link {
       display: block;
@@ -383,7 +385,9 @@
       cursor: default;
     }
 
+    .embedded-local-image:hover .x-remover,
     .embedded-local-audio:hover .x-remover,
+    .image-link:hover .x-remover,
     .audio-link:hover .x-remover,
     .video-link:hover .x-remover {
       display: block;
@@ -645,10 +649,14 @@
         let reader = new FileReader();
         const nextSibling = getTopLevelNodeOfCurrentPosition(lastValidSelectionRange)?.nextSibling;
         reader.onload = function (e) {
+          const divNode = document.createElement("div");
           const img = document.createElement("img");
           img.src = e.target.result;
-          img.setAttribute("class", "embedded-local-image");
-          editor.insertBefore(img, nextSibling);
+          divNode.appendChild(img);
+          divNode.appendChild(createRemover());
+          divNode.setAttribute("class", "embedded-local-image");
+          divNode.setAttribute("contenteditable", "false");
+          editor.insertBefore(divNode, nextSibling);
         };
         reader.readAsDataURL(file);
       }
@@ -656,13 +664,17 @@
 
     function insertImageLink() {
 
-      const url = prompt("Image URL");
+      const url = prompt("Image URL")?.trim();
       if (!url) return;
       const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
+      const divNode = document.createElement("div");
       const img = document.createElement("img");
       img.src = `${url}`;
-      img.setAttribute("class", "image-link");
-      editor.insertBefore(img, nextSibling);
+      divNode.appendChild(img);
+      divNode.appendChild(createRemover());
+      divNode.setAttribute("class", "image-link");
+      divNode.setAttribute("contenteditable", "false");
+      editor.insertBefore(divNode, nextSibling);
     }
 
     function insertAudio(event) {
@@ -690,7 +702,7 @@
 
     function insertAudioLink() {
 
-      const url = prompt("Audio URL");
+      const url = prompt("Audio URL")?.trim();
       if (!url) return;
       const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
       const divNode = document.createElement("div");
@@ -706,7 +718,7 @@
 
     function insertVideoLink() {
 
-      const url = prompt("Video URL");
+      const url = prompt("Video URL")?.trim();
       if (!url) return;
       const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
       const divNode = document.createElement("div");
@@ -746,7 +758,7 @@
 
     function insertEmbeddedContent() {
 
-      const iframeHtml = prompt("Embedded HTML (iframe)");
+      const iframeHtml = prompt("Embedded HTML (iframe)")?.trim();
       if (!iframeHtml) return;
       const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
       const divNode = document.createElement("div");
@@ -888,7 +900,7 @@
       const range = selection.getRangeAt(0);
       const editor = document.getElementById('editor');
       if (!editor.contains(range.commonAncestorContainer)) return;
-      const url = prompt("URL");
+      const url = prompt("URL")?.trim();
       if (!url) return;
       wrapRangeText(range, 'a', null, function (element) {
         element.href = url;
