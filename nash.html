@@ -807,6 +807,16 @@
 
       if (epubData) {
 
+        let book = null;
+
+        try {
+          //book = ePub(epubData, { openAs: "base64" }); // BUG: not working
+          book = ePub(await (await window.fetch(epubData)).blob());
+        } catch (error) { // we allow ePub loading only if epub library is available and the data could be loaded
+          console.log(error);
+          return;
+        }
+
         const ebookId = generateEbookId();
         const strEbookId = `ebook${ebookId}`;
         const strTocId = `toc${ebookId}`;
@@ -853,8 +863,6 @@
         divNode.appendChild(navButtons);
 
         divNode.appendChild(divEbook);
-        // const book = ePub(epubData, { openAs: "base64" }); // BUG: not working
-        const book = ePub(await (await window.fetch(epubData)).blob());
         divEbook.book = book;
         divNode.appendChild(createRemover(function() { book.destroy(); }));
         divNode.setAttribute("class", "embedded-local-epub");
