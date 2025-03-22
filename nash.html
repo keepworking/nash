@@ -572,6 +572,18 @@
       }
     }
 
+    function removeEpubNodes(html) {
+
+      const template = document.createElement('template');
+      template.innerHTML = html;
+
+      template.content.querySelectorAll('.embedded-local-epub').forEach(el => {
+        el.replaceChildren();
+      });
+
+      return template.innerHTML;
+    }
+
     async function exportToFile(save, editMode) {
       let filename = document.getElementById("filename").innerText.trim();
       if (!filename) {
@@ -585,7 +597,7 @@
         setEditMode(false);
       }
 
-      let content = document.documentElement.outerHTML;
+      let content = removeEpubNodes(document.documentElement.outerHTML);
       let blob = new Blob(["<!DOCTYPE html>\n" + content], { type: "text/html" });
       let file = new File([blob], filename, { type: "text/html" });
 
@@ -770,7 +782,6 @@
     function loadAllReferencedEpubs() {
 
       document.querySelectorAll('.embedded-local-epub').forEach(async el => {
-
         const dataUrl = el.getAttribute("data-epub");
         await loadEpub(dataUrl, null, el);
       });
