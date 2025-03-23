@@ -1852,14 +1852,14 @@
         next.setAttribute("id", `next${epubId}`);
         prev.textContent = "<PREV";
         next.textContent = "NEXT>";
-        prev.style = "float: left; left: 0; margin: 5px 5px; cursor: default;\
+        prev.style = "float: left; left: 0; margin: 5px 5px; cursor: pointer;\
                       user-select: none;\
                       -webkit-user-select: none;\
                       -ms-user-select: none;\
                       -webkit-touch-callout: none;\
                       -o-user-select: none;\
                       -moz-user-select: none;";
-        next.style = "float: right; right: 0; margin: 5px 5px; cursor: default;\
+        next.style = "float: right; right: 0; margin: 5px 5px; cursor: pointer;\
                       user-select: none;\
                       -webkit-user-select: none;\
                       -ms-user-select: none;\
@@ -2052,7 +2052,7 @@
           const pdfViewer = new PDFjsViewer(pdfView);
           pdfViewer.loadDocument(pdfData).then(function() {
               pdfViewer.setZoom("fit");
-              divNode.pdfViewer = pdfViewer;
+              pdfView.pdfViewer = pdfViewer;
 
               divNode.querySelector("#btnFirst")?.addEventListener("click", (e) => pdfViewer.first());
               divNode.querySelector("#btnPrev")?.addEventListener("click", (e) => {
