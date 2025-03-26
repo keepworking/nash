@@ -985,9 +985,9 @@
         el.replaceChildren();
       });
 
-      template.content.querySelectorAll('.embedded-local-pdf').forEach(el => {
+      /*template.content.querySelectorAll('.embedded-local-pdf').forEach(el => {
         el.replaceChildren();
-      });
+      });*/
 
       return template.innerHTML;
     }
@@ -1194,10 +1194,10 @@
         await loadEpub(dataUrl, null, el);
       });
 
-      document.querySelectorAll('.embedded-local-pdf').forEach(async el => {
+      /*document.querySelectorAll('.embedded-local-pdf').forEach(async el => {
         const dataUrl = el.getAttribute("data-pdf");
         await loadPdf(dataUrl, null, el);
-      });
+      });*/
     }
 
     function insertEpub(event, element = null) {
@@ -1402,7 +1402,7 @@
         divNode.appendChild(createRemover());
         divNode.setAttribute("class", "embedded-local-pdf");
         divNode.setAttribute("contenteditable", "true");
-        divNode.setAttribute("data-pdf", pdfData);
+        //divNode.setAttribute("data-pdf", pdfData);
 
         let strPdfId = divNode.getAttribute("id");
 
@@ -1417,6 +1417,11 @@
 
         PDFObject.embed(pdfData, divNode, {
           height: "800px",
+          pdfOpenParams: {
+            navpanes: 1,
+            view: "FitH",
+            pagemode: "thumbs"
+          }
         });
       }
     }
