@@ -384,7 +384,8 @@
     .embedded-local-audio,
     .image-link,
     .audio-link,
-    .video-link {
+    .video-link,
+    .pdf-link {
       display: block;
       position: relative;
     }
@@ -413,6 +414,7 @@
     .image-link:hover .x-remover,
     .audio-link:hover .x-remover,
     .video-link:hover .x-remover,
+    .pdf-link:hover .x-remover,
     .embedded-local-epub:hover .x-remover,
     .embedded-local-pdf:hover .x-remover {
       display: block;
@@ -516,6 +518,8 @@
 
       <label for="pdfUpload" title="Embed PDF file">PDF</label>
       <input type="file" id="pdfUpload" accept="pdf/*" onclick="this.value = null">
+
+      <button id="btnPdfLink" title="Insert PDF link">Link PDF</button>
 
       <div id="splitbar">|</div>
       <!-- Block conversion -->
@@ -1426,6 +1430,32 @@
       }
     }
 
+    function insertPdfLink() {
+
+      const url = prompt("PDF URL")?.trim();
+      if (!url) return;
+      const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
+      const divNode = document.createElement("div");
+      divNode.appendChild(createRemover());
+      divNode.setAttribute("class", "pdf-link");
+      divNode.setAttribute("contenteditable", "true");
+
+      const pdfId = generateUId();
+      const strPdfId = `pdf${pdfId}`;
+      divNode.setAttribute("id", strPdfId);
+
+      editor.insertBefore(divNode, nextSibling);
+
+      PDFObject.embed(url, divNode, {
+        height: "800px",
+        pdfOpenParams: {
+          navpanes: 1,
+          view: "FitH",
+          pagemode: "thumbs"
+        }
+      });
+    }
+
     function insertText() {
 
       const topNode = getTopLevelNodeOfCurrentPosition();
@@ -1959,6 +1989,8 @@
 
     document.getElementById("epubUpload").addEventListener("change", (e) => insertEpub(e));
     document.getElementById("pdfUpload").addEventListener("change", (e) => insertPdf(e));
+
+    document.getElementById("btnPdfLink").addEventListener("click", (e) => insertPdfLink());
 
     document.getElementById("btnSaveMenu").addEventListener("click", (e) => toggleDropdown("saveDropdown"));
     document.getElementById("btnSave").addEventListener("click", (e) => {
