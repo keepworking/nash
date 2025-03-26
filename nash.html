@@ -135,7 +135,7 @@
 
     .editor-container {
       width: 100%;
-      max-width: 900px;
+      max-width: 90%;
       background: var(--note-bg-color);
       padding: 30px;
       border-radius: 12px;
@@ -438,23 +438,23 @@
     <div id="filename" contenteditable="plaintext-only" class="file-title"></div>
 
     <div id="toolbar" class="no-print">
-      <button id="btnH1">XL</button>
-      <button id="btnH2">L</button>
-      <button id="btnM">M</button>
-      <button id="btnS">S</button>
+      <button id="btnH1" title="Extra large text">XL</button>
+      <button id="btnH2" title="Large text">L</button>
+      <button id="btnM" title="Medium text">M</button>
+      <button id="btnS" title="Small text">S</button>
 
-      <button id="btnB"><b>B</b></button>
-      <button id="btnI"><i>I</i></button>
-      <button id="btnU"><u>U</u></button>
-      <button id="btnLink">🔗</button>
+      <button id="btnB" title="Bold text"><b>B</b></button>
+      <button id="btnI" title="Italic text"><i>I</i></button>
+      <button id="btnU" title="Underline text"><u>U</u></button>
+      <button id="btnLink" title="Make text link">🔗</button>
 
-      <label for="imageUpload">📷</label>
+      <label for="imageUpload" title="Embed image">📷</label>
       <input type="file" id="imageUpload" accept="image/*" onclick="this.value = null">
 
-      <button id="btnImageLink"">🖼</button>
+      <button id="btnImageLink" title="Insert image link">🖼</button>
 
       <div class="dropdown">
-        <button id="btnTextColorMenu">Color</button>
+        <button id="btnTextColorMenu" title="Colorize text">Color</button>
         <div id="textColorDropdown" class="dropdown-content">
           <div class="swatch-grid">
             <button id="btnTextColor1" class="color-swatch" style="background: var(--note-text-color-1);"
@@ -479,7 +479,7 @@
 
       <!-- Highlight Color Dropdown -->
       <div class="dropdown">
-        <button id="btnTextHighlightMenu">Highlight</button>
+        <button id="btnTextHighlightMenu" title="Highlight text">Highlight</button>
         <div id="highlightDropdown" class="dropdown-content">
           <div class="swatch-grid">
             <button id="btnTextHighlight1" class="color-swatch" style="background: var(--note-highlight-color-1);"
@@ -501,26 +501,26 @@
           </div>
         </div>
       </div>
-      <button id="btnText"><b>T</b></button>
-      <button id="btnCode">🖥</button>
-      <button id="btnEmbedContent">🗂</button>
+      <button id="btnText" title="Add text"><b>T</b></button>
+      <button id="btnCode" title="Add source code text">🖥</button>
+      <button id="btnEmbedContent" title="Embed HTML">🗂</button>
 
-      <label for="audioUpload">🔈</label>
+      <label for="audioUpload" title="Embed audio file">🔈</label>
       <input type="file" id="audioUpload" accept="audio/*" onclick="this.value = null">
 
-      <button id="btnAudioLink">🔊</button>
-      <button id="btnVideoLink">📽</button>
+      <button id="btnAudioLink" title="Insert audio link">🔊</button>
+      <button id="btnVideoLink" title="Insert video link">📽</button>
 
-      <label for="epubUpload">📖</label>
+      <label for="epubUpload" title="Embed ePUB file">📖</label>
       <input type="file" id="epubUpload" accept="epub/*" onclick="this.value = null">
 
-      <label for="pdfUpload">📖</label>
+      <label for="pdfUpload" title="Embed PDF file">PDF</label>
       <input type="file" id="pdfUpload" accept="pdf/*" onclick="this.value = null">
 
       <div id="splitbar">|</div>
       <!-- Block conversion -->
       <div class="dropdown">
-        <button id="btnSaveMenu">💾</button>
+        <button id="btnSaveMenu" title="Save or Share">💾</button>
         <div id="saveDropdown" class="dropdown-content">
           <button id="btnSave">Save</button>
           <button id="btnShare">Share</button>
