@@ -176,6 +176,7 @@
 
     #toolbar #splitbar {
       margin-left: auto;
+      font-size: 24px;
     }
 
     #toolbar input[type="file"] {
@@ -190,7 +191,7 @@
       border: none;
       background: none;
       color: var(--control-text-color);
-      font-size: 16px;
+      font-size: 24px;
       cursor: pointer;
       transition: opacity 0.2s
     }
@@ -453,7 +454,7 @@
       <label for="imageUpload" title="Embed image">📷</label>
       <input type="file" id="imageUpload" accept="image/*" onclick="this.value = null">
 
-      <button id="btnImageLink" title="Insert image link">🖼</button>
+      <button id="btnImageLink" title="Insert image link">🔗📷</button>
 
       <div class="dropdown">
         <button id="btnTextColorMenu" title="Colorize text">Color</button>
@@ -510,16 +511,16 @@
       <label for="audioUpload" title="Embed audio file">🔈</label>
       <input type="file" id="audioUpload" accept="audio/*" onclick="this.value = null">
 
-      <button id="btnAudioLink" title="Insert audio link">🔊</button>
-      <button id="btnVideoLink" title="Insert video link">📽</button>
+      <button id="btnAudioLink" title="Insert audio link">🔗🔈</button>
+      <button id="btnVideoLink" title="Insert video link">🔗📽</button>
 
       <label for="epubUpload" title="Embed ePUB file">📖</label>
       <input type="file" id="epubUpload" accept="epub/*" onclick="this.value = null">
 
-      <label for="pdfUpload" title="Embed PDF file">PDF</label>
+      <label for="pdfUpload" title="Embed PDF file"><b>PDF</b></label>
       <input type="file" id="pdfUpload" accept="pdf/*" onclick="this.value = null">
 
-      <button id="btnPdfLink" title="Insert PDF link">Link PDF</button>
+      <button id="btnPdfLink" title="Insert PDF link">🔗<b>PDF</b></button>
 
       <div id="splitbar">|</div>
       <!-- Block conversion -->
