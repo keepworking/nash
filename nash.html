@@ -7,188 +7,6 @@
   <title>Nash Note</title>
   <link rel="icon" type="image/svg+xml"
     href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22100%22%20height%3D%22100%22%20viewBox%3D%220%200%20100%20100%22%3E%0A%20%20%3Crect%20width%3D%22100%22%20height%3D%22100%22%20rx%3D%2220%22%20fill%3D%22black%22%2F%3E%0A%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-size%3D%2260%22%20font-weight%3D%22bold%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%20font-family%3D%22Arial%2C%20sans-serif%22%20dominant-baseline%3D%22central%22%3EN.%3C%2Ftext%3E%0A%3C%2Fsvg%3E">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.0.375/pdf_viewer.min.css">
-  <style> /* pdfjs-viewer.css */
-    /*
-      Copyright 2020 Carlos de Alfonso (https://github.com/dealfonso)
-
-      Licensed under the Apache License, Version 2.0 (the "License");
-      you may not use this file except in compliance with the License.
-      You may obtain a copy of the License at
-
-          http://www.apache.org/licenses/LICENSE-2.0
-
-      Unless required by applicable law or agreed to in writing, software
-      distributed under the License is distributed on an "AS IS" BASIS,
-      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-      See the License for the specific language governing permissions and
-      limitations under the License.
-    */
-    .pdfjs-viewer {
-        overflow: auto;
-        border: 1px solid #aaa;
-        background: #ccc;
-        width: 100%;
-    }
-    .pdfjs-viewer.horizontal-scroll {
-        display: flex;
-    }
-    .pdfjs-viewer.horizontal-scroll .pdfpage {
-        margin-left: 1em;
-        margin-top: 0.25em !important;
-        margin-bottom: 0.25em !important;
-        display: block;
-    }
-    .pdfpage {
-        position: relative;
-        margin-bottom: 1em;
-        margin-top: 1em;
-        margin-left: auto;
-        margin-right: auto;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.09);
-        /* display: flex; */
-    }
-    .pdfpage canvas {
-        position: absolute;
-        left: 0;
-        top: 0;
-        height: 100%;
-        width: 100%;
-    }
-    .pdfpage.placeholder {
-        display: flex;
-        margin-bottom: 0em !important;
-        margin-top: 0em !important;
-        height: 100%;
-        width: 100%;
-    }
-    .pdfpage .content-wrapper {
-        margin: 0 !important;
-        padding: 0 !important;
-        display: flex !important;
-    }
-    .pdfpage .content-wrapper .loader {
-        border: 2px solid #f3f3f3;
-        border-top: 3px solid #3498db;
-        border-radius: 50%;
-        width: 24px;
-        height: 24px;
-        animation: spin 1s linear infinite;
-        margin: auto;
-    }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-  </style>
-  <style> /* pdftoolbar.css */
-    .pdfjs-toolbar {
-        width: 100%;
-        height: 32px;
-        background: #ddd;
-        z-index: 100;
-        vertical-align: middle;
-        display: flex;
-        margin: 0;
-        padding: 0;
-    }
-    .pdfjs-toolbar * {
-        margin: auto 0;
-    }
-    .pdfjs-toolbar span {
-        margin-right: 0.5em;
-        margin-left: 0.5em;
-        width: 4em !important;
-        font-size: 12px;
-    }
-    .pdfjs-toolbar button, .pdfjs-toolbar label.button, .pdfjs-toolbar a.button {
-        min-width: 26px;
-        height: 28px;
-        border: none;
-        padding: 2px 4px 0;
-        margin: auto 1px;
-        border-radius: 2px;
-        line-height: 12px;
-        font-size: 14px;
-        background-color: #ddd;
-        cursor: pointer;
-    }
-    .pdfjs-toolbar button i, .pdfjs-toolbar label.button i {
-        font-size: 26px;
-        padding: 0;
-        margin: 0;
-    }
-    .pdfjs-toolbar button:hover, .pdfjs-toolbar label.button:hover, .pdfjs-toolbar a.button:hover {
-        background-color: #ccc;
-    }
-    button.pushed {
-        background-color: #aaa !important;
-    }
-    .pdfjs-toolbar a.button {
-        color: inherit;
-    }
-    .pdfjs-toolbar .divider {
-        flex: 1;
-    }
-    .pdfjs-toolbar .v-sep {
-        width: 0px;
-        height: 20px;
-        border-left: 1px solid #bbb;
-    }
-    .pdfjs-toolbar .h-sep {
-        width: 100%;
-        height: 0px;
-        border-top: 1px solid #bbb;
-        margin: 0.25em 0;
-    }
-    .pdfjs-toolbar .dropdown.dropdown-right, .pdfjs-toolbar .dropdown.right {
-        float: right
-    }
-    .pdfjs-toolbar .dropdown.dropdown-right .dropdown-content, .pdfjs-toolbar .dropdown.right .dropdown-content {
-        right: 0;
-        left: auto;
-    }
-    .pdfjs-toolbar .dropdown-value {
-        background-color: #ccc;
-        padding: 0px 4px 2;
-        cursor: pointer;
-    }
-    .pdfjs-toolbar .dropdown-value i {
-        width: auto;
-        font-size: 12px;
-    }        
-    /* Dropdown Content (Hidden by Default) */
-    .pdfjs-toolbar .dropdown-content {
-        display: none;
-        position: absolute;
-        margin-top: 0;
-        background-color: #eee;
-        min-width: 10em;
-        z-index: 1;
-        font-size: 12px;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.09);
-    }
-    /* Links inside the dropdown */
-    .pdfjs-toolbar .dropdown-content a {
-        all: initial;
-        font: inherit;
-        color: black;
-        padding: 6px 8px;
-        text-decoration: none;
-        display: flex;
-        cursor: pointer;
-    }
-    .pdfjs-toolbar .dropdown-content i {
-        font-size: 16px;
-        padding-right: 0.5em;
-    }
-    .pdfjs-toolbar .dropdown-content a:hover {
-        background-color: #ddd;
-    }
-    .pdfjs-toolbar .dropdown:hover .dropdown-content, .dropdown .dropdown-content:hover {
-        display: block;
-    }
-  </style>
   <style>
     :root {
       --page-bg-color: #f8f9fa;
@@ -612,12 +430,6 @@
       }
     }
   </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.0.375/pdf.min.mjs" type="module"></script>
-  <script type="module">
-    let { pdfjsLib } = globalThis;
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.0.375/pdf.worker.mjs';
-  </script>
 </head>
 
 <body>
@@ -737,835 +549,413 @@
   <script src="https://github.com/futurepress/epub.js/releases/download/v0.3.88/epub.min.js"></script> <!-- check newer versions like 0.3.93 -->
 
   <script type="module">
+    /**
+     *  PDFObject v2.3.1
+     *  https://github.com/pipwerks/PDFObject
+     *  @license
+     *  Copyright (c) 2008-2025 Philip Hutchison
+     *  MIT-style license: http://pipwerks.mit-license.org/
+     *  UMD module pattern from https://github.com/umdjs/umd/blob/master/templates/returnExports.js
+     */
 
-    /* pdfjs-viewer */
-
-    /*
-      Copyright 2020 Carlos de Alfonso (https://github.com/dealfonso)
-
-      Licensed under the Apache License, Version 2.0 (the "License");
-      you may not use this file except in compliance with the License.
-      You may obtain a copy of the License at
-
-          http://www.apache.org/licenses/LICENSE-2.0
-
-      Unless required by applicable law or agreed to in writing, software
-      distributed under the License is distributed on an "AS IS" BASIS,
-      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-      See the License for the specific language governing permissions and
-      limitations under the License.
-    */
-    'use strict';
-
-    if ($ === undefined) {
-        console.error("jQuery-like library not available");
-    }
-
-    let defaults = {
-        // Threshold to consider that a page is visible
-        visibleThreshold: 0.5,
-        // Number of extra pages to load (appart from the visible)
-        extraPagesToLoad: 3,
-        // The class used for each page (the div that wraps the content of the page)
-        pageClass: "pdfpage",
-        // Prefix of the id used for each page (the page id will be <pageIdPrefix>-<page number>)
-        pageIdPrefix: "page",
-        // The class used for the content of each page (the div that contains the page)
-        contentClass: "content-wrapper",
-        // Function called when a document has been loaded and its structure has been created
-        onDocumentReady: () => {},
-        // Function called when a new page is created (it is bound to the object, and receives a html object as parameter, and the page number)
-        onNewPage: (page, i) => {},
-        // Function called when a page is rendered (it is bound to the object, and receives a html object as parameter, and the page number)
-        onPageRender: (page, i) => {},
-        // Posible zoom values to iterate over using "in" and "out"
-        zoomValues: [ 0.25, 0.5, 0.75, 1, 1.25, 1.50, 2, 4, 8 ],
-        // Function called when the zoom level changes (it receives the zoom level)
-        onZoomChange: (zoomlevel) => {},
-        // Function called whenever the active page is changed (the active page is the one that is shown in the viewer)
-        onActivePageChanged: (page, i) => {},
-        // Percentage of the container that will be filled with the page
-        zoomFillArea: 0.95,
-        // Function called to get the content of an empty page
-        emptyContent: () => $ ? $('<div class="loader"></div>') : {},
-        // The scale to which the pages are rendered (1.5 is the default value for the PDFjs viewer); a higher value will render the pages with a higher resolution
-        //   but it will consume more memory and CPU. A lower value will render the pages with a lower resolution, but they will be uglier.
-        renderingScale: 1.5,
-    }
-    
-    // Class used to help in zoom management; probably it can be moved to the main class, but it is used to group methods
-    class Zoomer {
-        /**
-         * Construct the helper class
-         * @param {PDFjsViewer} viewer - the viewer object
-         * @param {*} options - the options object
-         */
-        constructor(viewer, options = {}) {
-            let defaults = {
-                // The possible zoom values to iterate through using "in" and "out"
-                zoomValues: [ 0.25, 0.5, 0.75, 1, 1.25, 1.50, 2, 4, 8 ],
-                // The area to fill the container with the zoomed pages
-                fillArea: 0.9,
-            }
-    
-            // The current zooom value
-            this.current = 1;
-            // The viewer instance whose pages may be zoomed
-            this.viewer = viewer;
-            // The settings
-            this.settings = Object.assign({}, defaults, options);
-            
-            // Need having the zoom values in order
-            this.settings.zoomValues = this.settings.zoomValues.sort();
+    (function (root, factory) {
+        if (typeof define === "function" && define.amd) {
+            // AMD. Register as an anonymous module.
+            define([], factory);
+        } else if (typeof module === "object" && module.exports) {
+            // Node. Does not work with strict CommonJS, but
+            // only CommonJS-like environments that support module.exports,
+            // like Node.
+            module.exports = factory();
+        } else {
+            // Browser globals (root is window)
+            root.PDFObject = factory();
         }
-    
-        /** Translates a zoom value into a float value; possible values:
-         * - a float value
-         * - a string with a keyword (e.g. "width", "height", "fit", "in", "out")
-         * @param {number} zoom - the zoom value to be translated
-         * @return {number} The zoom value
+    }(globalThis, function () {
+
+        "use strict";
+
+        //PDFObject is designed for client-side (browsers), not server-side (node)
+        //Will choke on undefined navigator and window vars when run on server
+        //Return boolean false and exit function when running server-side
+
+        if(typeof window === "undefined" || window.navigator === undefined || window.navigator.userAgent === undefined){ return false; }
+
+        let pdfobjectversion = "2.3.1";
+        let win = window;
+        let nav = win.navigator;
+        let ua = nav.userAgent;
+        let suppressConsole = false;
+
+        //Fallback validation when navigator.pdfViewerEnabled is not supported
+        let isModernBrowser = function (){
+
+            /*
+              userAgent sniffing is not the ideal path, but most browsers revoked the ability to check navigator.mimeTypes
+              for security purposes. As of 2023, browsers have begun implementing navigator.pdfViewerEnabled, but older versions
+              do not have navigator.pdfViewerEnabled or the ability to check navigator.mimeTypes. We're left with basic browser
+              sniffing and assumptions of PDF support based on browser vendor.
+            */
+
+            //Chromium has provided native PDF support since 2011.
+            //Most modern browsers use Chromium under the hood: Google Chrome, Microsoft Edge, Opera, Brave, Vivaldi, Arc, and more.
+            //Chromium uses the PDFium rendering engine, which is based on Foxit's PDF rendering engine.
+            //Note that MS Edge opts to use a different PDF rendering engine. As of 2024, Edge uses a version of Adobe's Reader
+            let isChromium = (win.chrome !== undefined);
+
+            //Safari on macOS has provided native PDF support since 2009.
+            //This code snippet also detects the DuckDuckGo browser, which uses Safari/Webkit under the hood.
+            let isSafari = (win.safari !== undefined || (nav.vendor !== undefined && /Apple/.test(nav.vendor) && /Safari/.test(ua)));
+
+            //Firefox has provided PDF support via PDFJS since 2013.
+            let isFirefox = (win.Mozilla !== undefined || /irefox/.test(ua));
+
+            return isChromium || isSafari || isFirefox;
+
+        };
+
+        /*
+          Special handling for Internet Explorer 11.
+          Check for ActiveX support, then whether "AcroPDF.PDF" or "PDF.PdfCtrl" are valid.
+          IE11 uses ActiveX for Adobe Reader and other PDF plugins, but window.ActiveXObject will evaluate to false.
+          ("ActiveXObject" in window) evaluates to true.
+          MS Edge does not support ActiveX so this test will evaluate false for MS Edge.
         */
-        get(zoom = null) {
-            // If no zoom is specified, return the current one
-            if (zoom === null) {
-                return this.current;
+        let validateAX = function (type){
+            var ax = null;
+            try {
+                ax = new ActiveXObject(type);
+            } catch (e) {
+                //ensure ax remains null when ActiveXObject attempt fails
+                ax = null;
             }
-            // If it is a number, return it
-            if (parseFloat(zoom) == zoom) {
-                return zoom;
-            } 
-            let $activepage = this.viewer.getActivePage();
-            let zoomValues = [];
-            // If it is a keyword, return the corresponding value
-            switch(zoom) {
-                case "in":
-                    zoom = this.current;
-                    zoomValues = this.settings.zoomValues.filter((x) => x > zoom);
-                    if (zoomValues.length > 0) {
-                        zoom = Math.min(...zoomValues);
+            return !!ax; //convert resulting object to boolean
+        };
+
+        let hasActiveXPDFPlugin = function (){ return ("ActiveXObject" in win) && (validateAX("AcroPDF.PDF") || validateAX("PDF.PdfCtrl")) };
+
+        let checkSupport = function (){
+
+            //Safari on iPadOS doesn't report as 'mobile' when requesting desktop site, yet still fails to embed PDFs
+            let isSafariIOSDesktopMode = (nav.platform !== undefined && nav.platform === "MacIntel" && nav.maxTouchPoints !== undefined && nav.maxTouchPoints > 1);
+
+            let isMobileDevice = (isSafariIOSDesktopMode || /Mobi|Tablet|Android|iPad|iPhone/.test(ua));
+
+            //As of June 2023, no mobile browsers properly support inline PDFs. If mobile, just say no.
+            if(isMobileDevice){ return false; }
+
+            //Modern browsers began supporting navigator.pdfViewerEnabled in late 2022 and early 2023.
+            let supportsPDFVE = (typeof nav.pdfViewerEnabled === "boolean");
+
+            //If browser supports nav.pdfViewerEnabled and is explicitly saying PDFs are NOT supported (e.g. PDFJS disabled by user in Firefox), respect it.
+            if(supportsPDFVE && !nav.pdfViewerEnabled){ return false; }
+
+            return (supportsPDFVE && nav.pdfViewerEnabled) || isModernBrowser() || hasActiveXPDFPlugin();
+
+        };
+
+        //Determines whether PDF support is available
+        let supportsPDFs = checkSupport();
+
+        //Create a fragment identifier for using PDF Open parameters when embedding PDF
+        let buildURLFragmentString = function(pdfParams){
+
+            let string = "";
+            let prop;
+            let paramArray = [];
+            let fdf = "";
+
+            //The comment, viewrect, and highlight parameters require page to be set first.
+
+            //Check to ensure page is used if comment, viewrect, or highlight are specified
+            if(pdfParams.comment || pdfParams.viewrect || pdfParams.highlight){
+
+                if(!pdfParams.page){
+
+                    //If page is not set, use the first page
+                    pdfParams.page = 1;
+
+                    //Inform user that page needs to be set properly
+                    embedError("The comment, viewrect, and highlight parameters require a page parameter, but none was specified. Defaulting to page 1.");
+
+                }
+
+            }
+
+            //Let's go ahead and ensure page is always the first parameter.
+            if(pdfParams.page){
+                paramArray.push("page=" + encodeURIComponent(pdfParams.page));
+                delete pdfParams.page;
+            }
+
+            //FDF needs to be the last parameter in the string
+            if(pdfParams.fdf){
+                fdf = pdfParams.fdf;
+                delete pdfParams.fdf;
+            }
+
+            //Add all other parameters, as needed
+            if(pdfParams){
+
+                for (prop in pdfParams) {
+                    if (pdfParams.hasOwnProperty(prop)) {
+                        paramArray.push(encodeURIComponent(prop) + "=" + encodeURIComponent(pdfParams[prop]));
                     }
-                    break;
-                case "out":
-                    zoom = this.current;
-                    zoomValues = this.settings.zoomValues.filter((x) => x < zoom);
-                    if (zoomValues.length > 0) {
-                        zoom = Math.max(...zoomValues);
+                }
+
+                //Add fdf as the last parameter, if needed
+                if(fdf){
+                    paramArray.push("fdf=" + encodeURIComponent(fdf));
+                }
+
+                //Join all parameters in the array into a string
+                string = paramArray.join("&");
+
+                //The string will be empty if no PDF Parameters were provided
+                //Only prepend the hash if the string is not empty
+                if(string){
+                    string = "#" + string;
+                }
+
+            }
+
+            return string;
+
+        };
+
+        let embedError = function (msg){
+            if(!suppressConsole){
+                console.log("[PDFObject]", msg);
+            }
+            return false;
+        };
+
+        let emptyNodeContents = function (node){
+            while(node.firstChild){
+                node.removeChild(node.firstChild);
+            }
+        };
+
+        let getTargetElement = function (targetSelector){
+
+            //Default to body for full-browser PDF
+            let targetNode = document.body;
+
+            //If a targetSelector is specified, check to see whether
+            //it's passing a selector, jQuery object, or an HTML element
+
+            if(typeof targetSelector === "string"){
+
+                //Is CSS selector
+                targetNode = document.querySelector(targetSelector);
+
+            } else if (win.jQuery !== undefined && targetSelector instanceof jQuery && targetSelector.length) {
+
+                //Is jQuery element. Extract HTML node
+                targetNode = targetSelector.get(0);
+
+            } else if (targetSelector.nodeType !== undefined && targetSelector.nodeType === 1){
+
+                //Is HTML element
+                targetNode = targetSelector;
+
+            }
+
+            return targetNode;
+
+        };
+
+        let convertBase64ToDownloadableLink = function (b64, filename, targetNode, fallbackHTML) {
+
+            //IE-11 safe version. More verbose than modern fetch()
+            if (window.Blob && window.URL && window.URL.createObjectURL) {
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', b64, true);
+                xhr.responseType = 'blob';
+                xhr.onload = function() {
+
+                    if (xhr.status === 200) {
+
+                        var blob = xhr.response;
+                        var link = document.createElement('a');
+                        link.innerText = "Download PDF";
+                        link.href = URL.createObjectURL(blob);
+                        link.setAttribute('download', filename);
+                        targetNode.innerHTML = fallbackHTML.replace(/\[pdflink\]/g, link.outerHTML);
+
                     }
-                    break;
-                case "fit":
-                    zoom = Math.min(this.get("width"), this.get("height"));
-                    break;
-                case "width":
-                    zoom = this.settings.fillArea * this.viewer.$container.width() / $activepage.data("width");
-                    break;
-                case "height":
-                    zoom = this.settings.fillArea * this.viewer.$container.height() / $activepage.data("height");
-                    break;
-                default:
-                    zoom = this.current;
-                    break;
-            }
-            return zoom;
-        }
-    
-        /**
-         * Sets the zoom value to each page (changes both the page and the content div); relies on the data-values for the page
-         * @param {number} zoom - the zoom value to be set
-         */
-        zoomPages(zoom) {
-            zoom = this.get(zoom);
-            this.viewer.getPages().forEach(function(page) {
-                let $page = page.$div;
-                let c_width = $page.data("width");
-                let c_height = $page.data("height");
-    
-                $page.width(c_width * zoom).height(c_height * zoom);
-                $page.data('zoom', zoom);
-                $page.find(`.${this.viewer.settings.contentClass}`).width(c_width * zoom).height(c_height * zoom);
-            }.bind(this));
-            this.current = zoom;
-        }
-    }
 
-    class PDFjsViewer {
-        // The version of the viewer
-        version = "2.0.0";
-        
-        /**
-         * Constructs the object, and initializes actions:
-         *   - add the scroll handler to the container
-         *   - set the first adjusting action when the page is loaded
-         *   - creates the zoom helper
-         * @param {jQuery} $container the jQuery value that will hold the pages
-         * @param {dictionary} options options for the viewer
-         */
-        constructor($container, options = {}) {
-    
-            this.settings = Object.assign({}, defaults, options);
-    
-            // Create the zoomer helper
-            this._zoom = new Zoomer(this, {
-                zoomValues: this.settings.zoomValues,
-                fillArea: this.settings.zoomFillArea,
-            });
-    
-            $container = $($container);
-
-            // Store the container
-            this.$container = $container;
-    
-            // Add a reference to this object to the container
-            $container.get(0)._pdfjsViewer = this;
-    
-            // Add the event listeners
-            this._setScrollListener();
-
-            // Initialize some variables
-            this.pages = [];
-            this.pdf = null;
-
-            // Whether the document is ready or not
-            this._documentReady = false;
-        }    
-    
-        /**
-         * Sets the current zoom level and applies it to all the pages
-         * @param {number} zoom the desired zoom level, which will be a value (1 equals to 100%), or the keywords 'in', 'out', 'width', 'height' or 'fit'
-         */
-        setZoom(zoom) {
-            let container = this.$container.get(0);
-
-            // Get the previous zoom and scroll position
-            let prevzoom = this._zoom.current;
-            let prevScroll = {
-                top: container.scrollTop,
-                left: container.scrollLeft
-            };
-
-            // Now zoom the pages
-            this._zoom.zoomPages(zoom);
-
-            // Update the scroll position (to match the previous one), according to the new relationship of zoom
-            container.scrollLeft = prevScroll.left * this._zoom.current / prevzoom;
-            container.scrollTop = prevScroll.top * this._zoom.current / prevzoom;
-
-            // Force to redraw the visible pages to upgrade the resolution
-            this._visiblePages(true);
-
-            // Call the callback (if provided)
-            if (this._documentReady) {
-                if (typeof this.settings.onZoomChange === "function")
-                    this.settings.onZoomChange.call(this, this._zoom.current);                
-                this.$container.get(0).dispatchEvent(new CustomEvent("zoomchange", { detail: { zoom: this._zoom.current } }));
-            }
-
-            return this._zoom.current;
-        }
-    
-        /**
-         * Obtain the current zoom level
-         * @returns {number} the current zoom level
-         */
-        getZoom() {
-            return this._zoom.current;
-        }
-    
-        /**
-         * Function that removes the content of a page and replaces it with the empty content (i.e. a content generated by function emptyContent)
-         *   such content will not be visible except for the time that the 
-         * @param {jQuery} $page the page to be emptied
-         */
-        _cleanPage($page) {
-            let $emptyContent = this.settings.emptyContent();
-            $page.find(`.${this.settings.contentClass}`).html("").append($emptyContent)
-        }
-    
-        /**
-         * Function that replaces the content with the empty class in a page with a new content
-         * @param {*} $page the page to be modified
-         * @param {*} $content the new content that will be set in the page
-         */
-        _setPageContent($page, $content) {
-            $page.find(`.${this.settings.contentClass}`).html("").append($content)
-        }
-
-        /**
-         *  Recalculates which pages are now visible and forces redrawing them (moreover it cleans those not visible) 
-        */
-        refreshAll() {
-            this._visiblePages(true);
-        }
-    
-        /** Function that creates a scroll handler to update the active page and to load more pages as the scroll position changes */
-        _setScrollListener() {
-            // Create a scroll handler that prevents reentrance if called multiple times and the loading of pages is not finished
-            let scrollLock = false;
-            let scrollPos = { top:0 , left:0 };
-            this.__scrollHandler = function(e) {
-                // Avoid re-entrance for the same event while loading pages
-                if (scrollLock === true) {
-                    return;
-                }
-                scrollLock = true;
-    
-                let container = this.$container.get(0);
-                if ((Math.abs(container.scrollTop - scrollPos.top) > (container.clientHeight * 0.2 * this._zoom.current)) ||
-                    (Math.abs(container.scrollLeft - scrollPos.left) > (container.clientWidth * 0.2 * this._zoom.current))) {
-                    scrollPos = {
-                        top: container.scrollTop,
-                        left: container.scrollLeft
-                    }
-                    this._visiblePages();
-                }
-    
-                scrollLock = false;
-            }.bind(this);
-    
-            // Set the scroll handler
-            this.$container.off('scroll');
-            this.$container.on('scroll', this.__scrollHandler);            
-        }    
-        /**
-         * Function that creates the pageinfo structure for one page, along with the skeleton to host the page (i.e. <div class="page"><div class="content-wrapper"></div></div>)
-         *   If the page is a pageinfo, the new pageinfo structure will not rely on the size (it will copy it, but it won't be marked as loaded). If it is a page, the size will
-         *   be calculated from the viewport and it will be marked as loaded.
-         *   This is done in this way, because when creating the pages in the first time, they will be created assuming that they are of the same size than the first one. If they
-         *   are not, the size will be adjusted later, when the pages are loaded.
-         * 
-         * @param {*} page - the pageinfo (or the page) from which to create the pageinfo structure
-         * @param {*} i - the number of the page to be created
-         * @returns pageinfo - the pageinfo structure for the page
-         */
-        _createSkeleton(page, i) {
-            let pageinfo = {
-                $div: null,
-                width: 0,
-                height: 0,
-                loaded: false,
-            };
-    
-            // If it is a page, the size will be obtained from the viewport; otherwise, it will be copied from the provided pageinfo
-            if (page.getViewport !== undefined) {
-                let viewport = page.getViewport({rotation:this._rotation,scale:1});
-                pageinfo.width = viewport.width;
-                pageinfo.height = viewport.height;
-                pageinfo.loaded = true;
-            } else {
-                pageinfo.width = page.width;
-                pageinfo.height = page.height;
-            }
-            console.assert(((pageinfo.width > 0) && (pageinfo.height > 0)), "Page width and height must be greater than 0");
-    
-            // Now create the skeleton for the divs
-            pageinfo.$div = $(`<div id="${this.settings.pageIdPrefix}-${i}">`)
-                .attr('data-page', i)
-                .data('width', pageinfo.width)
-                .data('height', pageinfo.height)
-                .data('zoom', this._zoom.current)
-                .addClass(this.settings.pageClass)
-                .width(pageinfo.width * this._zoom.current)
-                .height(pageinfo.height * this._zoom.current);
-                
-            let $content = $(`<div class="${this.settings.contentClass}">`)
-                .width(pageinfo.width)
-                .height(pageinfo.height);
-
-            pageinfo.$div.append($content);
-            
-            // Clean the page (i.e. put the empty content, etc.)
-            this._cleanPage(pageinfo.$div);
-            
-            return pageinfo;
-        }
-    
-        /**
-         * This function places the page.$div in the container, according to its page number (i.e. it searches for the previous page and puts this page after)
-         *   * in principle, this method sould not be needed because all the pages are put in order; but this is created just in case it is needed in further versions
-         * @param {*} pageinfo - the pageinfo structure for the page (needs a valid $div)
-         * @param {*} i - the number of the page
-         */
-        _placeSkeleton(pageinfo, i) {
-            let prevpage = i - 1;
-            let $prevpage = null;
-            while ((prevpage>0) && (($prevpage = this.$container.find(`.${this.settings.pageClass}[data-page="${prevpage}"]`)).length === 0)) {
-                prevpage--;
-            }
-            if (prevpage === 0) {
-                this.$container.append(pageinfo.$div);
-            }
-            else {
-                $prevpage.after(pageinfo.$div);
-            }
-        }
-    
-        /**
-         * Creates the initial skeletons for all the pages, and places them into the container
-         * @param {page/pageinfo} pageinfo - the initial pageinfo (or page) structure
-         */
-        _createSkeletons(pageinfo) {
-            for (let i = 1; i <= this.pageCount; i++) {
-                if (this.pages[i] === undefined) {
-
-                    // Create the pageinfo structure, store it and place it in the appropriate place (the next page will be created similar to the previous one)
-                    pageinfo = this._createSkeleton(pageinfo, i);
-                    this.pages[i] = pageinfo;
-                    this._placeSkeleton(pageinfo, i);
-
-                    // Call the callback function (if provided)
-                    if (typeof this.settings.onNewPage === "function") {
-                        this.settings.onNewPage.call(this, pageinfo.$div.get(0), i);
-                    }
-                    this.$container.get(0).dispatchEvent(new CustomEvent("newpage", { detail: { pageNumber: i, page: pageinfo.$div.get(0) } }));
-                }
-            }
-        }
-    
-        /**
-         * Function to set the active page, and calling the callback (if provided)
-         * @param {*} i - the number of the page to set active
-         */
-        _setActivePage(i) {
-            if (this._activePage !== i) {
-                this._activePage = i;
-                let activePage = this.getActivePage();
-                if (this._documentReady) {
-                    activePage = activePage==null?null:activePage.get(0);
-                    if (typeof this.settings.onActivePageChanged === "function") {
-                        this.settings.onActivePageChanged.call(this, activePage, i);
-                    }
-                    this.$container.get(0).dispatchEvent(new CustomEvent("activepagechanged", { detail: { activePageNumber: i, activePage: activePage } }));
-                }
-            }
-        }
-    
-        /**
-         * Obtains the area of a div that falls in the viewer
-         * @param {*} $page - div whose area is to be calculated
-         * @returns the visible area
-         */
-        _areaOfPageVisible($page) {
-            if ($page === undefined) {
-                return 0;
-            }
-            let c_offset = this.$container.offset();
-            let c_width = this.$container.width();
-            let c_height = this.$container.height();
-            let position = $page.offset();
-            position.top -= c_offset.top;
-            position.left -= c_offset.left;
-            position.bottom = position.top + $page.outerHeight();
-            position.right = position.left + $page.outerWidth();
-            let page_y0 = Math.min(Math.max(position.top, 0), c_height);
-            let page_y1 = Math.min(Math.max($page.outerHeight() + position.top, 0), c_height);
-            let page_x0 = Math.min(Math.max(position.left, 0), c_width);
-            let page_x1 = Math.min(Math.max($page.outerWidth() + position.left, 0), c_width);
-            let vis_x = page_x1 - page_x0;
-            let vis_y = page_y1 - page_y0;
-            return (vis_x * vis_y);
-        }
-
-        /**
-         * Function that returns true if the page is considered to be visible (the amount of visible area is greater than the threshold)
-         * @param {*} i - the number of page to check
-         * @returns true if the page is visible
-         */
-        isPageVisible(i) {
-            if ((this.pdf === null) || (i === undefined) || (i === null) || (i < 1) || (i > this.pdf.numPages)) {
-                return false;
-            }
-            if (typeof i === "string") {
-                i = parseInt(i);
-            }
-            let $page = i;
-            if (typeof i === "number") {
-                if (this.pages[i] === undefined)
-                    return false;
-                $page = this.pages[i].$div;
-            }
-            return this._areaOfPageVisible($page) > ($page.outerWidth() * $page.outerHeight() * this.settings.visibleThreshold);
-        }
-
-        /**
-         * Function that calculates which pages are visible in the viewer, draws them (if not already drawn), and clears those not visible
-         * @param {*} forceRedraw - if true, the visible pages will be redrawn regardless of whether they are already drawn (useful for zoom changes)
-         */
-        _visiblePages(forceRedraw = false) {    
-            // Will grab the page with the greater visible area to set it as active
-            let max_area = 0;
-            let i_page = null;
-    
-            // If there are no visible pages, return
-            if (this.pages.length === 0) {
-                this._visibles = [];
-                this._setActivePage(0);
-                return;
-            }
-
-            // Calculate the visible area for each page and consider it visible if the visible area is greater than 0
-            let $visibles = this.pages.filter(function(pageinfo) {
-                let areaVisible = this._areaOfPageVisible(pageinfo.$div);
-                if (areaVisible > max_area) {
-                    max_area = areaVisible;
-                    i_page = pageinfo.$div.data('page');
-                }
-                return areaVisible > 0;
-            }.bind(this)).map((x) => x.$div);
-    
-            // Set the active page
-            this._setActivePage(i_page);
-    
-            // Now get the visible pages
-            let visibles = $visibles.map((x) => {
-                return parseInt($(x).data('page'))
-            });
-            if (visibles.length > 0) {
-                // Now will add some extra pages (before and after) the visible ones, to have them prepared in case of scroll
-                let minVisible = Math.min(...visibles);
-                let maxVisible = Math.max(...visibles);
-
-                for (let i = Math.max(1, minVisible - this.settings.extraPagesToLoad) ; i < minVisible ; i++) {
-                    if (!visibles.includes(i)) 
-                        visibles.push(i)
-                }
-                for (let i = maxVisible + 1; i <= Math.min(maxVisible + this.settings.extraPagesToLoad, this.pdf.numPages); i++) {
-                    if (!visibles.includes(i)) 
-                        visibles.push(i)
-                }
-            }
-    
-            // Now will draw the visible pages, but if not forcing, will only draw those that were not visible before
-            let nowVisibles = visibles;
-            if (! forceRedraw) {
-                nowVisibles = visibles.filter(function (x) { 
-                    return !this._visibles.includes(x) 
-                }.bind(this));
-            }
-    
-            // Get the pages that were visible before, that are not visible now, and clear them
-            this._visibles.filter(function (x) { 
-                return !visibles.includes(x) 
-            }).forEach(function (i) {
-                this._cleanPage(this.pages[i].$div);
-            }.bind(this))
-    
-            // Store the new visible pages
-            this._visibles = visibles;
-    
-            // And now we'll queue the pages to load
-            this.loadPages(...nowVisibles);
-        }
-
-        /**
-         * Function queue a set of pages to be loaded; if not loading, the function starts the loading worker
-         * @param  {...pageinfo} pages - the pages to load
-         */
-        loadPages(...pages) {
-            this._pagesLoading.push(...pages);
-            if (this._loading) {
-                return;
-            }
-            this._loadingTask();
-        }
-
-        /**
-         * Function that gets the pages pending to load and renders them sequentially (to avoid multiple rendering promises)
-         */
-        _loadingTask() {
-            this._loading = true;
-            if (this._pagesLoading.length > 0) {
-                let pagei = this._pagesLoading.shift();                
-                this.pdf.getPage(pagei).then(function(page) {
-                    // Render the page and update the information about the page with the loaded values
-                    this._renderPage(page, pagei);
-                }.bind(this)).then(function(pageinfo) {
-                    // Once loaded, we are not loading anymore
-                    if (this._pagesLoading.length > 0) {
-                        this._loadingTask();
-                    }
-                }.bind(this));
-            }
-            // Free the loading state
-            this._loading = false;
-        }        
-    
-        /**
-         * Function that sets the scroll position of the container to the specified page
-         * @param {*} i - the number of the page to set the scroll position
-         */
-        scrollToPage(i) {
-            if ((this.pages.length === 0) || (this.pages[i] === undefined)) {
-                return;
-            }
-            let $page = this.pages[i].$div;
-            if ($page.length === 0) {
-                console.warn(`Page ${i} not found`);
-                return;
-            }
-            let position = $page.position();
-            let containerPosition = this.$container.position();
-            if (position !== undefined) {
-                this.$container.get(0).scrollTop = this.$container.get(0).scrollTop + position.top - containerPosition.top;
-                this.$container.get(0).scrollLeft = this.$container.get(0).scrollLeft + position.left - containerPosition.left;
-            }
-            this._setActivePage(i);
-        }
-
-        /**
-         * Function that renders the page in a canvas, and sets the canvas into the $div
-         * @param {*} page - the page to be rendered
-         * @param {*} i - the number of the page to be rendered
-         * @returns a promise to render the page (the result of the promise will be the pageinfo)
-         */
-        _renderPage(page, i) {
-            // Get the pageinfo structure
-            let pageinfo = this.pages[i];
-            let scale = this.settings.renderingScale;
-    
-            // Calculate the pixel ratio of the device (we'll use a minimum of 1)
-            let pixel_ratio = window.devicePixelRatio || 1;
-            // Update the information that we know about the page to the actually loaded page
-            let viewport = page.getViewport({rotation: this._rotation, scale: this._zoom.current * scale});
-            pageinfo.width = (viewport.width / this._zoom.current) / scale;
-            pageinfo.height = (viewport.height / this._zoom.current) / scale;
-            pageinfo.$div.data("width", pageinfo.width);
-            pageinfo.$div.data("height", pageinfo.height);
-            pageinfo.$div.width(pageinfo.width * this._zoom.current);
-            pageinfo.$div.height(pageinfo.height * this._zoom.current);
-            pageinfo.loaded = true;
-    
-            // Create the canvas and prepare the rendering context
-            let $canvas = $('<canvas></canvas>');
-            let canvas = $canvas.get(0);
-            let context = canvas.getContext('2d');
-            canvas.height = viewport.height * pixel_ratio;
-            canvas.width = viewport.width * pixel_ratio;
-            canvas.getContext("2d")//.scale(pixel_ratio, pixel_ratio);
-            var transform = pixel_ratio !== 1
-                ? [pixel_ratio, 0, 0, pixel_ratio, 0, 0]
-                : null;
-            var renderContext = {
-                canvasContext: context,
-                viewport: viewport,
-                transform: transform,
-            };
-    
-            // Render the page and put the resulting rendered canvas into the page $div
-            return page.render(renderContext).promise.then(function() {
-                this._setPageContent(pageinfo.$div, $canvas);
-
-                // Call the callback (if provided)
-                if (this._documentReady) {
-                    if (typeof this.settings.onPageRender === "function") {
-                        this.settings.onPageRender.call(this, pageinfo.$div.get(0), i);
-                    }
-                    this.$container.get(0).dispatchEvent(new CustomEvent("pagerender", { detail: { pageNumber: i, page: pageinfo.$div.get(0) } }));
-                }
-                return pageinfo;
-            }.bind(this));
-        }
-    
-        /** Gets the div object corresponding to the active page */
-        getActivePage() {
-            if ((this._activePage === null) || (this.pdf === null)) {
-                return null;
-            }
-            if ((this._activePage < 1) || (this._activePage > this.pdf.numPages)) {
-                return null;
-            }
-            return this.pages[this._activePage].$div;
-        }
-    
-        /** Gets all the pages of the document (the pageinfo structures) */
-        getPages() {
-            return this.pages;
-        }
-    
-        /** Gets the number of pages of the document */
-        getPageCount() {
-            if (this.pdf === null) {
-                return 0;
-            }
-            return this.pdf.numPages;
-        }
-
-        /** Scrolls to the next page (if any) */ 
-        next() {
-            if (this._activePage < this.pdf.numPages) {
-                this.scrollToPage(this._activePage + 1);
-            }
-        }
-    
-        /** Scrolls to the previous page (if any) */
-        prev() {
-            if (this._activePage > 1) {
-                this.scrollToPage(this._activePage - 1);
-            }
-        }
-
-        first() {
-            if (this._activePage !== 1) {
-                this.scrollToPage(1);
-            }
-        }
-    
-        last() {
-            if (this.pdf === null)
-                return;
-            if (this._activePage !== this.pdf.numPages) {
-                this.scrollToPage(this.pdf.numPages);
-            }
-        }
-        /**
-         * Rotates the pages of the document
-         * @param {*} deg - degrees to rotate the pages
-         * @param {*} accumulate - whether the rotation is accumulated or not
-         */
-        rotate(deg, accumulate = false) {
-            if (accumulate) {
-                deg = deg + this._rotation;
-            }
-            this._rotation = deg;
-
-            let container = this.$container.get(0);
-            let prevScroll = {
-                top: container.scrollTop,
-                left: container.scrollLeft,
-                height: container.scrollHeight,
-                width: container.scrollWidth
-            };
-
-            return this.forceViewerInitialization().then(function() {
-                let newScroll = {
-                    top: container.scrollTop,
-                    left: container.scrollLeft,
-                    height: container.scrollHeight,
-                    width: container.scrollWidth
                 };
-                container.scrollTop = prevScroll.top * (newScroll.height / prevScroll.height);
-                container.scrollLeft = prevScroll.left * (newScroll.width / prevScroll.width);
-            }.bind(this));
-        }
-        /**
-         * This functions forces the creation of the whole content of the viewer (i.e. new divs, structures, etc.). It is usefull for full refresh of the viewer (e.g. when changes
-         *   the rotation of the pages)
-         * @returns a promise that is resolved when the viewer is fully initialized
-         */
-        forceViewerInitialization() {
-            // Store the pdf file
-            // Now prepare a placeholder for the pages
-            this.pages = [];
-    
-            // Remove all the pages
-            this.$container.find(`.${this.settings.pageClass}`).remove();
 
-            this._pagesLoading = [];
-            this._loading = false;
-            this._visibles = [];
-            this._activePage = null;
-            return this.pdf.getPage(1).then(function(page) {
-                this._createSkeletons(page);
-                this._visiblePages();
-                this._setActivePage(1);
-            }.bind(this));
-        }
-        /** 
-         * Loads the document and creates the pages
-         * @param {string} document - the url of the document to load
-         */
-        async loadDocument(document) {
-            // The document is not ready while loading
-            this._documentReady = false;
+                xhr.send();
 
-            // Now prepare a placeholder for the pages
-            this.pages = [];
-    
-            // Remove all the pages
-            this.$container.find(`.${this.settings.pageClass}`).remove();
-    
-            // Let's free the pdf file (if there was one before), and rely on the garbage collector to free the memory
-            this.pdf = null;
+            }
 
-            // Load the task and return the promise to load the document
-            let loadingTask = pdfjsLib.getDocument(document);
-            return loadingTask.promise.then(function(pdf) {
-                // Store the pdf file and get the 
-                this.pdf = pdf;
-                this.pageCount = pdf.numPages;
-                this._rotation = 0;
-                return this.forceViewerInitialization();
-            }.bind(this)).then(function() {
-                if (typeof this.settings.onDocumentReady === "function") {
-                    this.settings.onDocumentReady.call(this);
+        };
+
+
+        let generatePDFObjectMarkup = function (embedType, targetNode, url, pdfOpenFragment, width, height, id, title, omitInlineStyles, customAttribute, PDFJS_URL){
+
+            //Ensure target element is empty first
+            emptyNodeContents(targetNode);
+
+            let source = url;
+
+            if(embedType === "pdfjs"){
+                //If PDFJS_URL already contains a ?, assume querystring is in place, and use an ampersand to append PDFJS's file parameter
+                let connector = (PDFJS_URL.indexOf("?") !== -1) ? "&" : "?";
+                source = PDFJS_URL + connector + "file=" + encodeURIComponent(url) + pdfOpenFragment;
+            } else {
+                source += pdfOpenFragment;
+            }
+
+            let el = document.createElement("iframe");
+            el.className = "pdfobject";
+            el.type = "application/pdf";
+            el.title = title;
+            el.src = source;
+            el.allow = "fullscreen";
+            el.frameborder = "0";
+            if(id){ el.id = id; }
+
+            if(!omitInlineStyles){
+
+                let style = "border: none;";
+
+                if(targetNode !== document.body){
+                    //assign width and height to target node
+                    style += "width: " + width + "; height: " + height + ";";
+                } else {
+                    //this is a full-page embed, use CSS to fill the viewport
+                    style += "position: absolute; top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%;";
                 }
-                this.$container.get(0).dispatchEvent(new CustomEvent("documentready", { detail: { document: this.pdf } }));
 
-                // This is a trick to force active page changed event triggering after the document is ready
-                this._setActivePage(0)
-                this._documentReady = true;
-                this._setActivePage(1)
-            }.bind(this));
-        }
-    }
+                el.style.cssText = style;
 
-    function recoverAttributes(target, attributeDefaults) {
-        const camelcaseToSnakecase = str => str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
-        let $target = $(target);
-        let result = {};
-        if ($target.length > 0) {
-            $target = $($target[0]);
-            for (let originalAttributeName in attributeDefaults) {
-                let attributeName = camelcaseToSnakecase(originalAttributeName)
-                let attributeValue = $target.attr(attributeName);
-                if (attributeValue != null) {
-                    switch (typeof(attributeDefaults[originalAttributeName])) {
-                        case 'float':
-                            try {
-                                attributeValue = parseFloat(attributeValue);
-                            } catch (_) {
-                            }
-                            break;
-                        case 'number':
-                            try {
-                                attributeValue = parseInt(attributeValue);
-                            } catch (_) {
-                            }
-                            break;
-                        case 'function':
-                            let functionString = attributeValue;
-                            attributeValue = function() { eval(functionString); }.bind(target[0]); break;
-                        default:
-                            break;
+            }
+
+            //Allow developer to insert custom attribute on iframe element, but ensure it does not conflict with attributes used by PDFObject
+            let reservedTokens = ["className", "type", "title", "src", "style", "id", "allow", "frameborder"];
+            if(customAttribute && customAttribute.key && reservedTokens.indexOf(customAttribute.key) === -1){
+                el.setAttribute(customAttribute.key, (typeof customAttribute.value !== "undefined") ? customAttribute.value : "");
+            }
+
+            targetNode.classList.add("pdfobject-container");
+            targetNode.appendChild(el);
+
+            return targetNode.getElementsByTagName("iframe")[0];
+
+        };
+
+        let embed = function(url, targetSelector, options){
+
+            //If targetSelector is not defined, convert to boolean
+            let selector = targetSelector || false;
+
+            //Ensure options object is not undefined -- enables easier error checking below
+            let opt = options || {};
+
+            //Get passed options, or set reasonable defaults
+            suppressConsole = (typeof opt.suppressConsole === "boolean") ? opt.suppressConsole : false;
+            let id = (typeof opt.id === "string") ? opt.id : "";
+            let page = opt.page || false;
+            let pdfOpenParams = opt.pdfOpenParams || {};
+            let fallbackLink = (typeof opt.fallbackLink === "string" || typeof opt.fallbackLink === "boolean") ? opt.fallbackLink : true;
+            let width = opt.width || "100%";
+            let height = opt.height || "100%";
+            let title = opt.title || "Embedded PDF";
+            let forcePDFJS = (typeof opt.forcePDFJS === "boolean") ? opt.forcePDFJS : false;
+            let omitInlineStyles = (typeof opt.omitInlineStyles === "boolean") ? opt.omitInlineStyles : false;
+            let PDFJS_URL = opt.PDFJS_URL || false;
+            let targetNode = getTargetElement(selector);
+            let pdfOpenFragment = "";
+            let customAttribute = opt.customAttribute || {};
+            let fallbackFileNameForBase64 = opt.fallbackFileNameForBase64;
+            let fallbackHTML_default = "<p>This browser does not support inline PDFs. Please download the PDF to view it: [pdflink]</p>";
+
+            //Ensure URL is available. If not, exit now.
+            if(typeof url !== "string"){ return embedError("URL is not valid"); }
+
+            //If target element is specified but is not valid, exit without doing anything
+            if(!targetNode){ return embedError("Target element cannot be determined"); }
+
+            //page option overrides pdfOpenParams, if found
+            if(page){ pdfOpenParams.page = page; }
+
+            //Stringify optional Adobe params for opening document (as fragment identifier)
+            pdfOpenFragment = buildURLFragmentString(pdfOpenParams);
+
+
+            // --== Do the dance: Embed attempt #1 ==--
+
+            //If the forcePDFJS option is invoked, skip everything else and embed as directed
+            if(forcePDFJS && PDFJS_URL){
+                return generatePDFObjectMarkup("pdfjs", targetNode, url, pdfOpenFragment, width, height, id, title, omitInlineStyles, customAttribute, PDFJS_URL);
+            }
+
+            // --== Embed attempt #2 ==--
+
+            //Embed PDF if support is detected, or if this is a relatively modern browser
+            if(supportsPDFs){
+                return generatePDFObjectMarkup("iframe", targetNode, url, pdfOpenFragment, width, height, id, title, omitInlineStyles, customAttribute);
+            }
+
+            // --== Embed attempt #3 ==--
+
+            //If everything else has failed and a PDFJS fallback is provided, try to use it
+            if(PDFJS_URL){
+                return generatePDFObjectMarkup("pdfjs", targetNode, url, pdfOpenFragment, width, height, id, title, omitInlineStyles, customAttribute, PDFJS_URL);
+            }
+
+            // --== PDF embed not supported! Use fallback ==--
+
+            //Display the fallback link if available
+            if(fallbackLink){
+
+                //If a custom fallback has been provided, handle it now
+                if(typeof fallbackLink === "string"){
+
+                    //Ensure [url] is set in custom fallback
+                    targetNode.innerHTML = fallbackLink.replace(/\[url\]/g, url);
+
+                } else {
+
+                    //If the PDF is a base64 string, convert it to a downloadable link
+                    const match = url.match(/data:application\/pdf;(?:.*filename=([^;]+);)?.*base64,/i);
+                    if(match){
+
+                        fallbackFileNameForBase64 =
+                            fallbackFileNameForBase64 // from options
+                            || match[1] // from data URI metadata
+                            || "file.pdf"; // default
+
+                        //Asynchronously append the link to the targetNode
+                        convertBase64ToDownloadableLink(url, fallbackFileNameForBase64, targetNode, fallbackHTML_default);
+
+                    } else {
+
+                        //Use default fallback link
+                        let link = "<a href='" + url + "'>Download PDF</a>";
+                        targetNode.innerHTML = fallbackHTML_default.replace(/\[pdflink\]/g, link);
+
                     }
-                    result[originalAttributeName] = attributeValue;
+
                 }
-            };
-        }
-        return result;
-    }
 
-    function init(element) {
-        let options = recoverAttributes(element, Object.assign({
-            pdfDocument: "", initialZoom: ""
-        }, defaults));
-        if (options["pdfDocument"] != null) {
-            let pdfViewer = new PDFjsViewer($(element), options);
-            pdfViewer.loadDocument(options["pdfDocument"]).then(function() {
-                if (options["initialZoom"] != null) {
-                    pdfViewer.setZoom(options["initialZoom"]);
-                }
-            })
-            element.get(0).pdfViewer = pdfViewer;
-        }
-    }
+            }
 
-    if ($ !== undefined) {
-      $('.pdfjs-viewer').each(function() {
-        let $viewer = $(this);
-        init($viewer);
-      });
-    }
+            return embedError("This browser does not support embedded PDFs");
 
-    /* END OF pdfjs-viewer */
+        };
+
+        return {
+            embed: function (a,b,c){ return embed(a,b,c); },
+            pdfobjectversion: (function () { return pdfobjectversion; })(),
+            supportsPDFs: (function (){ return supportsPDFs; })()
+        };
+
+    })); // END OF PDFObject
 
     const NON_STYLABLE_NODE_NAMES = ["CODE", "IFRAME"];
 
@@ -2011,29 +1401,8 @@
         const divNode = element || document.createElement("div");
         divNode.appendChild(createRemover());
         divNode.setAttribute("class", "embedded-local-pdf");
-        divNode.setAttribute("contenteditable", "false");
+        divNode.setAttribute("contenteditable", "true");
         divNode.setAttribute("data-pdf", pdfData);
-
-        divNode.innerHTML = `
-            <div class="pdfjs-toolbar">
-                <div>
-                    <button id="btnFirst">FIRST</button>
-                    <button id="btnPrev">&lt;PREV</button>
-                    <span class="pageno"></span>
-                    <button id="btnNext">NEXT&gt;</button>
-                    <button id="btnLast">LAST</button>
-                </div>
-                <div>
-                    <button id="bntZoomOut"><b>-</b></button>
-                    <span id="zoomval"><b>100%</b></span>
-                    <button id="bntZoomIn"><b>+</b></button>
-                    <button id="bntZoomWidth">SWAP HORIZ</button>
-                    <button id="bntZoomHeight">SWAP VERT</button>
-                    <button id="bntZoomFit">FIT</button>
-                </div>
-            </div>
-            <div id="pdfView" class="pdfjs-viewer">
-            </div>`;
 
         let strPdfId = divNode.getAttribute("id");
 
@@ -2046,35 +1415,9 @@
 
         if (!element) editor.insertBefore(divNode, nextSibling);
 
-        try {
-
-          const pdfView = divNode.querySelector(`#${strPdfId} #pdfView`);
-          const pdfViewer = new PDFjsViewer(pdfView);
-          pdfViewer.loadDocument(pdfData).then(function() {
-              pdfViewer.setZoom("fit");
-              pdfView.pdfViewer = pdfViewer;
-
-              divNode.querySelector("#btnFirst")?.addEventListener("click", (e) => pdfViewer.first());
-              divNode.querySelector("#btnPrev")?.addEventListener("click", (e) => {
-                pdfViewer.prev();
-                return false;
-              });
-              divNode.querySelector("#btnNext")?.addEventListener("click", (e) => {
-                pdfViewer.next();
-                return false;
-              });
-              divNode.querySelector("#btnLast")?.addEventListener("click", (e) => pdfViewer.last());
-
-              divNode.querySelector("#btnZoomOut")?.addEventListener("click", (e) => pdfViewer.setZoom("out"));
-              divNode.querySelector("#btnZoomIn")?.addEventListener("click", (e) => pdfViewer.setZoom("in"));
-              divNode.querySelector("#btnZoomWidth")?.addEventListener("click", (e) => pdfViewer.setZoom("width"));
-              divNode.querySelector("#btnZoomHeight")?.addEventListener("click", (e) => pdfViewer.setZoom("height"));
-              divNode.querySelector("#btnZoomFit")?.addEventListener("click", (e) => pdfViewer.setZoom("fit"));
-          });
-        } catch (e) {
-          console.log(e);
-          if (!element) editor.removeChild(divNode);
-        }
+        PDFObject.embed(pdfData, divNode, {
+          height: "800px",
+        });
       }
     }
 
