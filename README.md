@@ -18,14 +18,14 @@ Features:
 - Saving (writable or read-only document)
 - Sharing (writable or read-only document)
 - Epub embedding
+- Pdf embedding
+- Pdf link embedding
 
 TODO:
 - Undo and redo (most important)
 - Epub link embedding
 - Epub embedding from url
 - Allow epub in continuous scrolling mode (fix EPUBjs library)
-- Pdf embedding
-- Pdf link embedding
 - Ebooks highlighting
 - Support for other ebooks (djvu, mobi, azw3, chm, ps, etc)
 - Source code text highlighting
