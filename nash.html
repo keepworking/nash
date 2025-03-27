@@ -7,7 +7,6 @@
   <title>Nash Note</title>
   <link rel="icon" type="image/svg+xml"
     href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22100%22%20height%3D%22100%22%20viewBox%3D%220%200%20100%20100%22%3E%0A%20%20%3Crect%20width%3D%22100%22%20height%3D%22100%22%20rx%3D%2220%22%20fill%3D%22black%22%2F%3E%0A%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-size%3D%2260%22%20font-weight%3D%22bold%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%20font-family%3D%22Arial%2C%20sans-serif%22%20dominant-baseline%3D%22central%22%3EN.%3C%2Ftext%3E%0A%3C%2Fsvg%3E" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/fontawesome.min.css" integrity="sha512-v8QQ0YQ3H4K6Ic3PJkym91KoeNT5S3PnDKvqnwqFD1oiqIl653crGZplPdU5KKtHjO0QKcQ2aUlQZYjHczkmGw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     :root {
       --page-bg-color: #f8f9fa;
@@ -427,6 +426,7 @@
       width: 100%;
       height: 150px;
       margin: 10px 0;
+      border-radius: 12px;
     }
 
     .embedded-local-epub,
@@ -480,7 +480,8 @@
     .audio-recording-container {
       width: 100%;
       height: 100%;
-      /* view port height*/
+      background-color: white;
+      border-radius: 12px;
       /*targeting Chrome & Safari*/
       display: -webkit-flex;
       /*targeting IE10*/
@@ -1652,14 +1653,14 @@
       divNode.setAttribute("contenteditable", "false");
       divNode.innerHTML = `
         <div class="audio-recording-container">
-          <i class="start-recording-button fa fa-microphone" aria-hidden="true"></i>
+          <b class="start-recording-button" aria-hidden="true" style="font-size: 36px;">🎤</b>
           <div class="recording-control-buttons-container hide">
-            <i class="cancel-recording-button fa fa-times-circle-o" aria-hidden="true"></i>
+            <b class="cancel-recording-button fa fa-times-circle-o" aria-hidden="true" style="font-size: 36px;"></b>
             <div class="recording-elapsed-time">
-              <i class="red-recording-dot fa fa-circle" aria-hidden="true"></i>
+              <b class="red-recording-dot fa fa-circle" aria-hidden="true" style="font-size: 36px;"></b>
               <p class="elapsed-time"></p>
             </div>
-            <i class="stop-recording-button fa fa-stop-circle-o" aria-hidden="true"></i>
+            <b class="stop-recording-button fa fa-stop-circle-o" aria-hidden="true" style="font-size: 36px;"></b>
           </div>
           <div class="text-indication-of-audio-playing-container">
             <p class="text-indication-of-audio-playing hide">Audio is playing<span>.</span><span>.</span><span>.</span></p>
