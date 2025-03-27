@@ -386,15 +386,20 @@
     .embedded-table table {
       width: 100%;
       height: auto;
-      /*display: block;*/
+      padding: 0 0;
       margin: 0 0;
       text-align: left;
       table-layout:fixed;
+      border: 1px solid black;
+      border-collapse: collapse;
     }
 
     .embedded-table table th,
     .embedded-table table td {
       overflow: hidden;
+      border: 1px solid black;
+      margin: 0 0;
+      padding: 0 8px;
     }
 
     .thin-line::before {
@@ -1549,7 +1554,7 @@
         --rows;
 
         for (let i = 0; i < cols; ++i) {
-          thead += `\n<th scope="col">Column ${i + 1}</th>`;
+          thead += `\n<th scope="col" contenteditable="true">Column ${i + 1}</th>`;
         }
         thead = "<thead>\n<tr>" + thead + "\n</tr>\n</thead>";
       }
@@ -1559,7 +1564,7 @@
         let tr = "";
 
         for (let j = 0; j < cols; ++j) {
-          tr += `\n<td>${i + 1} ${j + 1}</td>`;
+          tr += `\n<td contenteditable="true">${i + 1} ${j + 1}</td>`;
         }
         tr = "<tr>" + tr + "\n</tr>";
         tbody += `\n${tr}`;
@@ -1569,12 +1574,12 @@
       const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
       const divNode = document.createElement("div");
       divNode.setAttribute("class", "embedded-table");
-      divNode.setAttribute("contenteditable", "true");
+      divNode.setAttribute("contenteditable", "false");
 
       const tableId = generateUId();
       const strTableId = `table${tableId}`;
       divNode.setAttribute("id", strTableId);
-      divNode.innerHTML = ["<table>", thead, tbody, "</table>"].join("\n");
+      divNode.innerHTML = ['<table contenteditable="false">', thead, tbody, "</table>"].join("\n");
 
       editor.insertBefore(divNode, nextSibling);
       divNode.appendChild(createRemover());
