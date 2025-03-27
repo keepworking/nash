@@ -498,7 +498,7 @@
       color: #435f7a;
       cursor: pointer;
       opacity: .5;
-      margin-bottom: 30px;
+      margin: 10px 0;
     }
 
     .start-recording-button:hover {
@@ -514,8 +514,8 @@
       justify-content: space-evenly;
       /*horizontal centering*/
       align-items: center;
-      width: 334px;
-      margin-bottom: 30px;
+      width: 100%;
+      margin: 10px 0;
     }
 
     .cancel-recording-button,
@@ -1647,26 +1647,26 @@
       const arId = generateUId();
       const strArId = `ar${arId}`;
       const divNode = document.createElement("div");
-      divNode.appendChild(createRemover());
       divNode.setAttribute("id", strArId);
       divNode.setAttribute("class", "audio-recording");
       divNode.setAttribute("contenteditable", "false");
       divNode.innerHTML = `
         <div class="audio-recording-container">
-          <b class="start-recording-button" aria-hidden="true" style="font-size: 36px;">🎤</b>
+          <b class="start-recording-button" aria-hidden="true">🎤</b>
           <div class="recording-control-buttons-container hide">
-            <b class="cancel-recording-button" aria-hidden="true" style="font-size: 36px;">❌</b>
+            <b class="cancel-recording-button" aria-hidden="true">❌</b>
             <div class="recording-elapsed-time">
-              <b class="red-recording-dot" aria-hidden="true" style="font-size: 36px;">🔴</b>
+              <b class="red-recording-dot" aria-hidden="true">🔴</b>
               <p class="elapsed-time"></p>
             </div>
-            <b class="stop-recording-button fa fa-stop-circle-o" aria-hidden="true" style="font-size: 36px;"></b>
+            <b class="stop-recording-button fa fa-stop-circle-o" aria-hidden="true">S</b>
           </div>
           <div class="text-indication-of-audio-playing-container">
             <p class="text-indication-of-audio-playing hide">Audio is playing<span>.</span><span>.</span><span>.</span></p>
           </div>
         </div>
         <audio controls class="audio-element hide"></audio>`;
+      divNode.appendChild(createRemover());
 
       if (audioRecorder.recordingState === MediaRecordingStatus.CLOSED) {
         editor.insertBefore(divNode, nextSibling);
@@ -1680,7 +1680,7 @@
       const elapsedTimeTag = document.querySelectorAll(`#${strArId} .elapsed-time`)[0];
       const audioElement = document.querySelectorAll(`#${strArId} .audio-element`)[0];
       const audioSources = audioElement.getElementsByTagName("source");
-      const audioElementSource = audioSources.length > 0 ? audioSources[0] : null;
+      let audioElementSource = audioSources.length > 0 ? audioSources[0] : null;
       const textIndicatorOfAudioPlaying = document.querySelectorAll(`#${strArId} .text-indication-of-audio-playing`)[0];
 
       // Audio Controller
