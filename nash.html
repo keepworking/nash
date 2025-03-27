@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nash Note</title>
   <link rel="icon" type="image/svg+xml"
-    href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22100%22%20height%3D%22100%22%20viewBox%3D%220%200%20100%20100%22%3E%0A%20%20%3Crect%20width%3D%22100%22%20height%3D%22100%22%20rx%3D%2220%22%20fill%3D%22black%22%2F%3E%0A%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-size%3D%2260%22%20font-weight%3D%22bold%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%20font-family%3D%22Arial%2C%20sans-serif%22%20dominant-baseline%3D%22central%22%3EN.%3C%2Ftext%3E%0A%3C%2Fsvg%3E">
+    href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22100%22%20height%3D%22100%22%20viewBox%3D%220%200%20100%20100%22%3E%0A%20%20%3Crect%20width%3D%22100%22%20height%3D%22100%22%20rx%3D%2220%22%20fill%3D%22black%22%2F%3E%0A%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-size%3D%2260%22%20font-weight%3D%22bold%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%20font-family%3D%22Arial%2C%20sans-serif%22%20dominant-baseline%3D%22central%22%3EN.%3C%2Ftext%3E%0A%3C%2Fsvg%3E" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/fontawesome.min.css" integrity="sha512-v8QQ0YQ3H4K6Ic3PJkym91KoeNT5S3PnDKvqnwqFD1oiqIl653crGZplPdU5KKtHjO0QKcQ2aUlQZYjHczkmGw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     :root {
       --page-bg-color: #f8f9fa;
@@ -401,6 +402,7 @@
       table-layout:fixed;
       border: 1px solid black;
       border-collapse: collapse;
+      border-spacing: 0;
     }
 
     .embedded-table table th,
@@ -421,6 +423,12 @@
       margin: 10px 0;
     }
 
+    .audio-recording {
+      width: 100%;
+      height: 150px;
+      margin: 10px 0;
+    }
+
     .embedded-local-epub,
     .embedded-local-pdf,
     .embedded-local-image,
@@ -429,7 +437,8 @@
     .image-link,
     .audio-link,
     .video-link,
-    .pdf-link {
+    .pdf-link,
+    .audio-recording {
       display: block;
       position: relative;
     }
@@ -461,9 +470,263 @@
     .image-link:hover .x-remover,
     .audio-link:hover .x-remover,
     .video-link:hover .x-remover,
-    .pdf-link:hover .x-remover {
+    .pdf-link:hover .x-remover,
+    .audio-recording .x-remover {
       display: block;
     }
+
+    /* Audio Recording UI */
+
+    .audio-recording-container {
+      width: 100%;
+      height: 100%;
+      /* view port height*/
+      /*targeting Chrome & Safari*/
+      display: -webkit-flex;
+      /*targeting IE10*/
+      display: -ms-flex;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      /*horizontal centering*/
+      align-items: center;
+    }
+
+    .start-recording-button {
+      font-size: 70px;
+      color: #435f7a;
+      cursor: pointer;
+      opacity: .5;
+      margin-bottom: 30px;
+    }
+
+    .start-recording-button:hover {
+      opacity: 1;
+    }
+
+    .recording-control-buttons-container {
+      /*targeting Chrome & Safari*/
+      display: -webkit-flex;
+      /*targeting IE10*/
+      display: -ms-flex;
+      display: flex;
+      justify-content: space-evenly;
+      /*horizontal centering*/
+      align-items: center;
+      width: 334px;
+      margin-bottom: 30px;
+    }
+
+    .cancel-recording-button,
+    .stop-recording-button {
+      font-size: 70px;
+      cursor: pointer;
+    }
+
+    .cancel-recording-button {
+      color: red;
+      opacity: 0.7;
+    }
+
+    .cancel-recording-button:hover {
+      color: rgb(206, 4, 4);
+    }
+
+    .stop-recording-button {
+      color: #33cc33;
+      opacity: 0.7;
+    }
+
+    .stop-recording-button:hover {
+      color: #27a527;
+    }
+
+    .recording-elapsed-time {
+      /*targeting Chrome & Safari*/
+      display: -webkit-flex;
+      /*targeting IE10*/
+      display: -ms-flex;
+      display: flex;
+      justify-content: center;
+      /*horizontal centering*/
+      align-items: center;
+    }
+
+    .red-recording-dot {
+      font-size: 25px;
+      color: red;
+      margin-right: 12px;
+      /*transitions with Firefox, IE and Opera Support browser support*/
+      animation-name: flashing-recording-dot;
+      -webkit-animation-name: flashing-recording-dot;
+      -moz-animation-name: flashing-recording-dot;
+      -o-animation-name: flashing-recording-dot;
+      animation-duration: 2s;
+      -webkit-animation-duration: 2s;
+      -moz-animation-duration: 2s;
+      -o-animation-duration: 2s;
+      animation-iteration-count: infinite;
+      -webkit-animation-iteration-count: infinite;
+      -moz-animation-iteration-count: infinite;
+      -o-animation-iteration-count: infinite;
+    }
+
+    /* The animation code */
+    @keyframes flashing-recording-dot {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    @-webkit-keyframes flashing-recording-dot {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    @-moz-keyframes flashing-recording-dot {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    @-o-keyframes flashing-recording-dot {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .elapsed-time {
+      font-size: 32px;
+    }
+
+    .recording-control-buttons-container.hide {
+      display: none;
+    }
+
+    .audio-element.hide {
+      display: none;
+    }
+
+    .text-indication-of-audio-playing-container {
+      height: 20px;
+    }
+
+    .text-indication-of-audio-playing {
+      font-size: 20px;
+    }
+
+    .text-indication-of-audio-playing.hide {
+      display: none;
+    }
+
+    /* 3 Dots animation*/
+    .text-indication-of-audio-playing span {
+      /*transitions with Firefox, IE and Opera Support browser support*/
+      animation-name: blinking-dot;
+      -webkit-animation-name: blinking-dot;
+      -moz-animation-name: blinking-dot;
+      -o-animation-name: blinking-dot;
+      animation-duration: 2s;
+      -webkit-animation-duration: 2s;
+      -moz-animation-duration: 2s;
+      -o-animation-duration: 2s;
+      animation-iteration-count: infinite;
+      -webkit-animation-iteration-count: infinite;
+      -moz-animation-iteration-count: infinite;
+      -o-animation-iteration-count: infinite;
+    }
+
+    .text-indication-of-audio-playing span:nth-child(2) {
+      animation-delay: .4s;
+      -webkit-animation-delay: .4s;
+      -moz-animation-delay: .4s;
+      -o-animation-delay: .4s;
+    }
+
+    .text-indication-of-audio-playing span:nth-child(3) {
+      animation-delay: .8s;
+      -webkit-animation-delay: .8s;
+      -moz-animation-delay: .8s;
+      -o-animation-delay: .8s;
+    }
+
+    /* The animation code */
+    @keyframes blinking-dot {
+      0% {
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    /* The animation code */
+    @-webkit-keyframes blinking-dot {
+      0% {
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    /* The animation code */
+    @-moz-keyframes blinking-dot {
+      0% {
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    /* The animation code */
+    @-o-keyframes blinking-dot {
+      0% {
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+    /* END OF Audio Recording UI */
 
     @media print {
       .no-print {
@@ -556,6 +819,7 @@
       <input type="file" id="audioUpload" accept="audio/*" onclick="this.value = null">
 
       <button id="btnAudioLink" title="Insert audio link">🔗🔈</button>
+      <button id="btnRecordAudio" title="Record audio">🎤</button>
       <button id="btnVideoLink" title="Insert video link">🔗📽</button>
 
       <label for="epubUpload" title="Embed ePUB file">📖</label>
@@ -1013,6 +1277,130 @@
 
     })); // END OF PDFObject
 
+    // Media Recording
+
+    class MediaRecordingStatus {
+      static #_CLOSED = 0;
+      static #_INITIALIZING = 1;
+      static #_RECORDING = 2;
+
+      static get CLOSED() { return this.#_CLOSED; }
+      static get INITIALIZING() { return this.#_INITIALIZING; }
+      static get RECORDING() { return this.#_RECORDING; }
+    }
+
+    // Audio Recorder object
+    const audioRecorder = {
+      recordingState: MediaRecordingStatus.CLOSED, /** Stores the recording state*/
+      /** Stores the recorded audio as Blob objects of audio data as the recording continues*/
+      audioBlobs: [],/*of type Blob[]*/
+      /** Stores the reference of the MediaRecorder instance that handles the MediaStream when recording starts*/
+      mediaRecorder: null, /*of type MediaRecorder*/
+      /** Stores the reference to the stream currently capturing the audio*/
+      streamBeingCaptured: null, /*of type MediaStream*/
+      /** Start recording the audio 
+       * @returns {Promise} - returns a promise that resolves if audio recording successfully started
+       */
+      isMediaRecordingSupported: function () {
+        return !!(navigator?.mediaDevices && navigator.mediaDevices.getUserMedia);
+      },
+      start: function () {
+
+        audioRecorder.recordingState = MediaRecordingStatus.INITIALIZING;
+
+        // Feature Detection
+        if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
+          // Feature is not supported in browser
+          // return a custom error
+          audioRecorder.recordingState = MediaRecordingStatus.CLOSED;
+          return Promise.reject(new Error("mediaDevices API or getUserMedia method is not supported in this browser."));
+        } else {
+          // Feature is supported in browser
+
+          // create an audio stream
+          return navigator.mediaDevices.getUserMedia({ audio: true }/*of type MediaStreamConstraints*/)
+            // returns a promise that resolves to the audio stream
+            .then(stream /*of type MediaStream*/ => {
+
+              // save the reference of the stream to be able to stop it when necessary
+              audioRecorder.streamBeingCaptured = stream;
+
+              // create a media recorder instance by passing that stream into the MediaRecorder constructor
+              audioRecorder.mediaRecorder = new MediaRecorder(stream); /*the MediaRecorder interface of the MediaStream Recording
+              API provides functionality to easily record media*/
+
+              // clear previously saved audio Blobs, if any
+              audioRecorder.audioBlobs = [];
+
+              // add a dataavailable event listener in order to store the audio data Blobs when recording
+              audioRecorder.mediaRecorder.addEventListener("dataavailable", event => {
+                // store audio Blob object
+                audioRecorder.audioBlobs.push(event.data);
+              });
+
+              // start the recording by calling the start method on the media recorder
+              audioRecorder.mediaRecorder.start();
+              audioRecorder.recordingState = MediaRecordingStatus.RECORDING;
+            });
+
+            /* errors are not handled in the API because if its handled and the promise is chained, the .then after the catch will be executed*/
+        }
+      },
+      /** Stop the started audio recording
+       * @returns {Promise} - returns a promise that resolves to the audio as a blob file
+       */
+      stop: function () {
+        // return a promise that would return the blob or URL of the recording
+        return new Promise(resolve => {
+
+          // save audio type to pass to set the Blob type
+          let mimeType = audioRecorder.mediaRecorder.mimeType;
+
+          // listen to the stop event in order to create & return a single Blob object
+          audioRecorder.mediaRecorder.addEventListener("stop", () => {
+            // create a single blob object, as we might have gathered a few Blob objects that needs to be joined as one
+            let audioBlob = new Blob(audioRecorder.audioBlobs, { type: mimeType });
+            audioRecorder.recordingState = MediaRecordingStatus.CLOSED;
+            
+            // resolve promise with the single audio blob representing the recorded audio
+            resolve(audioBlob);
+          });
+          audioRecorder.cancel();
+        });
+      },
+      /** Cancel audio recording*/
+      cancel: function () {
+        // stop the recording feature
+        audioRecorder.mediaRecorder.stop();
+
+        // stop all the tracks on the active stream in order to stop the stream
+        audioRecorder.stopStream();
+
+        // reset API properties for next recording
+        audioRecorder.resetRecordingProperties();
+      },
+      /** Stop all the tracks on the active stream in order to stop the stream and remove
+       * the red flashing dot showing in the tab
+       */
+      stopStream: function () {
+        // stopping the capturing request by stopping all the tracks on the active stream
+        audioRecorder.streamBeingCaptured.getTracks() //get all tracks from the stream
+          .forEach(track /*of type MediaStreamTrack*/ => track.stop()); //stop each one
+      },
+      /** Reset all the recording properties including the media recorder and stream being captured*/
+      resetRecordingProperties: function () {
+
+        audioRecorder.mediaRecorder = null;
+        audioRecorder.streamBeingCaptured = null;
+        audioRecorder.recordingState = MediaRecordingStatus.CLOSED;
+
+        /*No need to remove event listeners attached to mediaRecorder as
+        If a DOM element which is removed is reference-free (no references pointing to it), the element itself is picked
+        up by the garbage collector as well as any event handlers/listeners associated with it.
+        getEventListeners(audioRecorder.mediaRecorder) will return an empty array of events.*/
+      }
+    }; // END OF Media Recording
+
     const NON_STYLABLE_NODE_NAMES = ["CODE", "IFRAME"];
 
     function setEditMode(editMode) {
@@ -1243,6 +1631,360 @@
              s4() + s4() + s4() + s4();
     }
 
+    function insertAudioRecording() {
+
+      if (!audioRecorder.isMediaRecordingSupported()) {
+        console.log("Media recording is not supported in this browser.");
+        alert("Media recording is not supported in this browser.");
+        return;
+      }
+
+      if (audioRecorder.recordingState !== MediaRecordingStatus.CLOSED) {
+        return;
+      }
+      const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
+      const arId = generateUId();
+      const strArId = `ar${arId}`;
+      const divNode = document.createElement("div");
+      divNode.appendChild(createRemover());
+      divNode.setAttribute("id", strArId);
+      divNode.setAttribute("class", "audio-recording");
+      divNode.setAttribute("contenteditable", "false");
+      divNode.innerHTML = `
+        <div class="audio-recording-container">
+          <i class="start-recording-button fa fa-microphone" aria-hidden="true"></i>
+          <div class="recording-control-buttons-container hide">
+            <i class="cancel-recording-button fa fa-times-circle-o" aria-hidden="true"></i>
+            <div class="recording-elapsed-time">
+              <i class="red-recording-dot fa fa-circle" aria-hidden="true"></i>
+              <p class="elapsed-time"></p>
+            </div>
+            <i class="stop-recording-button fa fa-stop-circle-o" aria-hidden="true"></i>
+          </div>
+          <div class="text-indication-of-audio-playing-container">
+            <p class="text-indication-of-audio-playing hide">Audio is playing<span>.</span><span>.</span><span>.</span></p>
+          </div>
+        </div>
+        <audio controls class="audio-element hide"></audio>`;
+
+      if (audioRecorder.recordingState === MediaRecordingStatus.CLOSED) {
+        editor.insertBefore(divNode, nextSibling);
+      } else {
+        return;
+      }
+      const microphoneButton = document.querySelectorAll(`#${strArId} .start-recording-button`)[0];
+      const recordingControlButtonsContainer = document.querySelectorAll(`#${strArId} .recording-control-buttons-container`)[0];
+      const stopRecordingButton = document.querySelectorAll(`#${strArId} .stop-recording-button`)[0];
+      const cancelRecordingButton = document.querySelectorAll(`#${strArId} .cancel-recording-button`)[0];
+      const elapsedTimeTag = document.querySelectorAll(`#${strArId} .elapsed-time`)[0];
+      const audioElement = document.querySelectorAll(`#${strArId} .audio-element`)[0];
+      const audioSources = audioElement.getElementsByTagName("source");
+      const audioElementSource = audioSources.length > 0 ? audioSources[0] : null;
+      const textIndicatorOfAudioPlaying = document.querySelectorAll(`#${strArId} .text-indication-of-audio-playing`)[0];
+
+      // Audio Controller
+
+      /** Stores the actual start time when an audio recording begins to take place to ensure elapsed time start time is accurate*/
+      let audioRecordStartTime = null;
+
+      /** Stores the maximum recording time in hours to stop recording once maximum recording hour has been reached */
+      let maximumRecordingTimeInHours = 1;
+
+      /** Stores the reference of the setInterval function that controls the timer in audio recording*/
+      let elapsedTimeTimer = null;
+
+      /** Starts the audio recording*/
+      function startAudioRecording() {
+
+        console.log("Recording Audio...");
+
+        // If a previous audio recording is playing, pause it
+        let recorderAudioIsPlaying = !audioElement.paused; // the paused property tells whether the media element is paused or not
+        console.log("paused?", !recorderAudioIsPlaying);
+
+        if (recorderAudioIsPlaying) {
+          audioElement.pause();
+          // also hide the audio playing indicator displayed on the screen
+          hideTextIndicatorOfAudioPlaying();
+        }
+
+        // start recording using the audio recording API
+        audioRecorder.start()
+          .then(() => { //on success
+
+            // store the recording start time to display the elapsed time according to it
+            audioRecordStartTime = new Date();
+
+            // display control buttons to offer the functionality of stop and cancel
+            handleDisplayingRecordingControlButtons();
+          })
+          .catch(error => { // on error
+            // No Browser Support Error
+            if (error.message.includes("mediaDevices API or getUserMedia method is not supported in this browser.")) {
+              console.log("To record audio, use browsers like Chrome and Firefox.");
+              alert("To record audio, use browsers like Chrome and Firefox.");
+            }
+
+            // Error handling structure
+            switch (error.name) {
+              case "AbortError": // error from navigator.mediaDevices.getUserMedia
+                console.log("An AbortError has occured.");
+                break;
+              case "NotAllowedError": // error from navigator.mediaDevices.getUserMedia
+                console.log("A NotAllowedError has occured. User might have denied permission.");
+                break;
+              case "NotFoundError": // error from navigator.mediaDevices.getUserMedia
+                console.log("A NotFoundError has occured.");
+                break;
+              case "NotReadableError": // error from navigator.mediaDevices.getUserMedia
+                console.log("A NotReadableError has occured.");
+                break;
+              case "SecurityError": // error from navigator.mediaDevices.getUserMedia or from the MediaRecorder.start
+                console.log("A SecurityError has occured.");
+                break;
+              case "TypeError": // error from navigator.mediaDevices.getUserMedia
+                console.log("A TypeError has occured.");
+                break;
+              case "InvalidStateError": // error from the MediaRecorder.start
+                console.log("An InvalidStateError has occured.");
+                break;
+              case "UnknownError": // error from the MediaRecorder.start
+                console.log("An UnknownError has occured.");
+                break;
+              default:
+                console.log("An error occured with the error name " + error.name);
+            };
+          });
+      }
+      /** Stop the currently started audio recording & sends it
+       */
+      function stopAudioRecording() {
+
+        console.log("Stopping Audio Recording...");
+
+        // stop the recording using the audio recording API
+        audioRecorder.stop()
+          .then(audioAsblob => {
+            //  Play recorder audio
+            playAudio(audioAsblob);
+
+            // hide recording control button & return record icon
+            handleHidingRecordingControlButtons();
+          })
+          .catch(error => {
+            // Error handling structure
+            switch (error.name) {
+              case "InvalidStateError": // error from the MediaRecorder.stop
+                console.log("An InvalidStateError has occured.");
+                break;
+              default:
+                console.log("An error occured with the error name " + error.name);
+            };
+          });
+      }
+
+      /** Cancel the currently started audio recording */
+      function cancelAudioRecording() {
+        console.log("Canceling audio...");
+
+        // cancel the recording using the audio recording API
+        audioRecorder.cancel();
+
+        // hide recording control button & return record icon
+        handleHidingRecordingControlButtons();
+      }
+
+      /** Plays recorded audio using the audio element in the HTML document
+       * @param {Blob} recorderAudioAsBlob - recorded audio as a Blob Object 
+      */
+      function playAudio(recorderAudioAsBlob) {
+
+        // read content of files (Blobs) asynchronously
+        let reader = new FileReader();
+
+        // once content has been read
+        reader.onload = (e) => {
+          // store the base64 URL that represents the URL of the recording audio
+          let base64URL = e.target.result;
+
+          // If this is the first audio playing, create a source element
+          // as pre populating the HTML with a source of empty src causes error
+          if (!audioElementSource) // if its not defined create it (happens first time only)
+            createSourceForAudioElement();
+
+          // set the audio element's source using the base64 URL
+          audioElementSource.src = base64URL;
+
+          // set the type of the audio element based on the recorded audio's Blob type
+          let BlobType = recorderAudioAsBlob.type.includes(";") ?
+            recorderAudioAsBlob.type.substr(0, recorderAudioAsBlob.type.indexOf(';')) : recorderAudioAsBlob.type;
+          audioElementSource.type = BlobType
+
+          // call the load method as it is used to update the audio element after changing the source or other settings
+          audioElement.load();
+
+          // play the audio after successfully setting new src and type that corresponds to the recorded audio
+          console.log("Playing audio...");
+          audioElement.play();
+
+          // display text indicator of having the audio play in the background
+          displayTextIndicatorOfAudioPlaying();
+        };
+
+        //read content and convert it to a URL (base64)
+        reader.readAsDataURL(recorderAudioAsBlob);
+      }
+
+      /** Computes the elapsed recording time since the moment the function is called in the format h:m:s*/
+      function handleElapsedRecordingTime() {
+        // display inital time when recording begins
+        displayElapsedTimeDuringAudioRecording("00:00");
+
+        // create an interval that compute & displays elapsed time, as well as, animate red dot - every second
+        elapsedTimeTimer = setInterval(() => {
+          // compute the elapsed time every second
+          let elapsedTime = computeElapsedTime(audioRecordStartTime); // pass the actual record start time
+          // display the elapsed time
+          displayElapsedTimeDuringAudioRecording(elapsedTime);
+        }, 1000); // every second
+      }
+
+      /** Display elapsed time during audio recording
+       * @param {String} elapsedTime - elapsed time in the format mm:ss or hh:mm:ss 
+       */
+      function displayElapsedTimeDuringAudioRecording(elapsedTime) {
+        // 1. display the passed elapsed time as the elapsed time in the elapsedTime HTML element
+        elapsedTimeTag.innerHTML = elapsedTime;
+
+        // 2. Stop the recording when the max number of hours is reached
+        if (elapsedTimeReachedMaximumNumberOfHours(elapsedTime)) {
+          stopAudioRecording();
+        }
+      }
+
+      /**
+       * @param {String} elapsedTime - elapsed time in the format mm:ss or hh:mm:ss  
+       * @returns {Boolean} whether the elapsed time reached the maximum number of hours or not
+       */
+      function elapsedTimeReachedMaximumNumberOfHours(elapsedTime) {
+        // Split the elapsed time by the symbo :
+        let elapsedTimeSplitted = elapsedTime.split(":");
+
+        // Turn the maximum recording time in hours to a string and pad it with zero if less than 10
+        let maximumRecordingTimeInHoursAsString = maximumRecordingTimeInHours < 10 ? "0" + maximumRecordingTimeInHours : maximumRecordingTimeInHours.toString();
+
+        // if it the elapsed time reach hours and also reach the maximum recording time in hours return true
+        if (elapsedTimeSplitted.length === 3 && elapsedTimeSplitted[0] === maximumRecordingTimeInHoursAsString)
+            return true;
+        else // otherwise, return false
+            return false;
+      }
+
+      /** Computes the elapsedTime since the moment the function is called in the format mm:ss or hh:mm:ss
+       * @param {String} startTime - start time to compute the elapsed time since
+       * @returns {String} elapsed time in mm:ss format or hh:mm:ss format, if elapsed hours are 0.
+       */
+      function computeElapsedTime(startTime) {
+        // record end time
+        let endTime = new Date();
+
+        // time difference in ms
+        let timeDiff = endTime - startTime;
+
+        // convert time difference from ms to seconds
+        timeDiff = timeDiff / 1000;
+
+        // extract integer seconds that dont form a minute using %
+        let seconds = Math.floor(timeDiff % 60); // ignoring uncomplete seconds (floor)
+
+        // pad seconds with a zero if neccessary
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        // convert time difference from seconds to minutes using %
+        timeDiff = Math.floor(timeDiff / 60);
+
+        // extract integer minutes that don't form an hour using %
+        let minutes = timeDiff % 60; // no need to floor possible incomplete minutes, becase they've been handled as seconds
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+
+        // convert time difference from minutes to hours
+        timeDiff = Math.floor(timeDiff / 60);
+
+        // extract integer hours that don't form a day using %
+        let hours = timeDiff % 24; // no need to floor possible incomplete hours, becase they've been handled as seconds
+
+        // convert time difference from hours to days
+        timeDiff = Math.floor(timeDiff / 24);
+
+        // the rest of timeDiff is number of days
+        let days = timeDiff; // add days to hours
+
+        let totalHours = hours + (days * 24);
+        totalHours = totalHours < 10 ? "0" + totalHours : totalHours;
+
+        if (totalHours === "00") {
+          return minutes + ":" + seconds;
+        } else {
+          return totalHours + ":" + minutes + ":" + seconds;
+        }
+      }
+
+      /** Displays recording control buttons */
+      function handleDisplayingRecordingControlButtons() {
+        // Hide the microphone button that starts audio recording
+        microphoneButton.style.display = "none";
+
+        // Display the recording control buttons
+        recordingControlButtonsContainer.classList.remove("hide");
+
+        // Handle the displaying of the elapsed recording time
+        handleElapsedRecordingTime();
+      }
+
+      /** Hide the displayed recording control buttons */
+      function handleHidingRecordingControlButtons() {
+        // Display the microphone button that starts audio recording
+        microphoneButton.style.display = "block";
+
+        // Hide the recording control buttons
+        recordingControlButtonsContainer.classList.add("hide");
+
+        // stop interval that handles both time elapsed and the red dot
+        clearInterval(elapsedTimeTimer);
+      }
+
+      /** Creates a source element for the the audio element in the HTML document*/
+      function createSourceForAudioElement() {
+        let sourceElement = document.createElement("source");
+        audioElement.appendChild(sourceElement);
+        audioElementSource = sourceElement;
+      }
+
+      /** Display the text indicator of the audio being playing in the background */
+      function displayTextIndicatorOfAudioPlaying() {
+        textIndicatorOfAudioPlaying.classList.remove("hide");
+      }
+
+      /** Hide the text indicator of the audio being playing in the background */
+      function hideTextIndicatorOfAudioPlaying() {
+        textIndicatorOfAudioPlaying.classList.add("hide");
+      }
+
+      //Listeners
+
+      // Listen to start recording button
+      microphoneButton.onclick = startAudioRecording;
+
+      // Listen to stop recording button
+      stopRecordingButton.onclick = stopAudioRecording;
+
+      // Listen to cancel recording button
+      cancelRecordingButton.onclick = cancelAudioRecording;
+
+      // Listen to when the audio being played ends
+      audioElement.onended = hideTextIndicatorOfAudioPlaying;
+    }
+
     function loadAllReferencedDocuments() {
 
       document.querySelectorAll('.embedded-local-epub').forEach(async el => {
@@ -1332,7 +2074,7 @@
 
         divNode.appendChild(divEbook);
         divEbook.book = book;
-        divNode.appendChild(createRemover(function() { book.destroy(); }));
+        divNode.appendChild(createRemover(function () { book.destroy(); }));
         divNode.setAttribute("class", "embedded-local-epub");
         divNode.setAttribute("contenteditable", "false");
         divNode.setAttribute("data-epub", epubData);
@@ -1341,7 +2083,7 @@
         const rendition = book.renderTo(strEpubId, { flow: "scrolled",
                                                      width: "100%", height: 600, replacements: "base64" /*, allowScriptedContent: true*/ });
 
-        const keyListener = function(e) {
+        const keyListener = function (e) {
 
           // Left Key
           if ((e.keyCode || e.which) == 37) {
@@ -1356,22 +2098,22 @@
         rendition?.on("keyup", keyListener);
         document.addEventListener("keyup", keyListener, false);
 
-        prev.addEventListener("click", function(e){
+        prev.addEventListener("click", function (e) {
           rendition?.prev();
           e.preventDefault();
         }, false);
 
-        next.addEventListener("click", function(e){
+        next.addEventListener("click", function (e) {
           rendition?.next();
           e.preventDefault();
         }, false);
 
         const displayed = rendition?.display();
-        book.loaded.navigation.then(function(toc) {
+        book.loaded.navigation.then(function (toc) {
 
           const docfrag = document.createDocumentFragment();
 
-          toc.forEach(function(chapter) {
+          toc.forEach(function (chapter) {
 
             const option = document.createElement("option");
             option.textContent = chapter.label;
@@ -1380,7 +2122,7 @@
             docfrag.appendChild(option);
           });
           selectToc.appendChild(docfrag);
-          selectToc.onchange = function() {
+          selectToc.onchange = function () {
 
               const index = selectToc.selectedIndex,
                     url = selectToc.options[index].getAttribute("ref");
@@ -1417,12 +2159,12 @@
 
           return result;
         }
-        rendition?.on("rendered", function(section) {
+        rendition?.on("rendered", function (section) {
 
           const current = book.navigation && book.navigation.get(section.href);
           navigatedTo(current?.href);
         });
-        rendition?.on("relocated", function(location) {
+        rendition?.on("relocated", function (location) {
 
           let current = book.navigation.get(location.start?.href);
 
@@ -2135,6 +2877,7 @@
     document.getElementById("audioUpload").addEventListener("change", (e) => insertAudio(event));
 
     document.getElementById("btnAudioLink").addEventListener("click", (e) => insertAudioLink());
+    document.getElementById("btnRecordAudio").addEventListener("click", (e) => insertAudioRecording());
     document.getElementById("btnVideoLink").addEventListener("click", (e) => insertVideoLink());
 
     document.getElementById("epubUpload").addEventListener("change", (e) => insertEpub(e));
