@@ -40,7 +40,7 @@ TODO:
 - Lists (todos)
 - Data sources embedding
 - Drawing canvas
-- Table customization
+- Table customization: see https://tabulator.info
 - Tags
 - MathML
 - Text effects
