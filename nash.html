@@ -1957,6 +1957,13 @@
           const range = selection.getRangeAt(0);
           let block = range.startContainer;
 
+          if (block && block.nodeType === Node.TEXT_NODE && ((block.parentNode?.nodeName === "TH") || (block.parentNode?.nodeName === "TD"))) {
+
+              e.stopImmediatePropagation();
+              e.preventDefault();
+              return;
+          }
+
           while (block && block !== editor) {
 
             if (block.nodeType === Node.ELEMENT_NODE && block.nodeName === "CODE") {
