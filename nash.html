@@ -257,10 +257,19 @@
     }
 
     #saveDropdown {
-      width: 200px;
+      width: 250px;
     }
 
     #saveDropdown button {
+      width: 100%;
+      text-align: left;
+    }
+
+    #tableDropdown {
+      width: 200px;
+    }
+
+    #tableDropdown button {
       width: 100%;
       text-align: left;
     }
@@ -556,8 +565,13 @@
       <input type="file" id="pdfUpload" accept="pdf/*" onclick="this.value = null">
 
       <button id="btnPdfLink" title="Insert PDF link">🔗<b>PDF</b></button>
-      <button id="btnTable" title="Add table"><b>Table</b></button>
-      <button id="btnHeadlessTable" title="Add headless table"><b>H Table</b></button>
+      <div class="dropdown">
+        <button id="btnTable" title="Add table"><b>Table</b></button>
+        <div id="tableDropdown" class="dropdown-content">
+          <button id="btnSimpleTable" title="Add simple table">Simple Table</button>
+          <button id="btnHeadlessTable" title="Add headless table">Headless Table</button>
+        </div>
+      </div>
 
       <div id="splitbar">|</div>
       <!-- Block conversion -->
@@ -2120,8 +2134,15 @@
     document.getElementById("pdfUpload").addEventListener("change", (e) => insertPdf(e));
 
     document.getElementById("btnPdfLink").addEventListener("click", (e) => insertPdfLink());
-    document.getElementById("btnTable").addEventListener("click", (e) => insertTable(false));
-    document.getElementById("btnHeadlessTable").addEventListener("click", (e) => insertTable(true));
+    document.getElementById("btnTable").addEventListener("click", (e) => toggleDropdown("tableDropdown"));
+    document.getElementById("btnSimpleTable").addEventListener("click", (e) => {
+      toggleDropdown("tableDropdown");
+      insertTable(false);
+    });
+    document.getElementById("btnHeadlessTable").addEventListener("click", (e) => {
+      toggleDropdown("tableDropdown");
+      insertTable(true);
+    });
 
     document.getElementById("btnSaveMenu").addEventListener("click", (e) => toggleDropdown("saveDropdown"));
     document.getElementById("btnSave").addEventListener("click", (e) => {
