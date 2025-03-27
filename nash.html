@@ -493,18 +493,6 @@
       align-items: center;
     }
 
-    .start-recording-button {
-      font-size: 70px;
-      color: #435f7a;
-      cursor: pointer;
-      opacity: .5;
-      margin: 10px 0;
-    }
-
-    .start-recording-button:hover {
-      opacity: 1;
-    }
-
     .recording-control-buttons-container {
       /*targeting Chrome & Safari*/
       display: -webkit-flex;
@@ -520,7 +508,7 @@
 
     .cancel-recording-button,
     .stop-recording-button {
-      font-size: 70px;
+      font-size: 36px;
       cursor: pointer;
     }
 
@@ -554,7 +542,7 @@
     }
 
     .red-recording-dot {
-      font-size: 25px;
+      font-size: 24px;
       color: red;
       margin-right: 12px;
       /*transitions with Firefox, IE and Opera Support browser support*/
@@ -633,100 +621,6 @@
       display: none;
     }
 
-    .text-indication-of-audio-playing-container {
-      height: 20px;
-    }
-
-    .text-indication-of-audio-playing {
-      font-size: 20px;
-    }
-
-    .text-indication-of-audio-playing.hide {
-      display: none;
-    }
-
-    /* 3 Dots animation*/
-    .text-indication-of-audio-playing span {
-      /*transitions with Firefox, IE and Opera Support browser support*/
-      animation-name: blinking-dot;
-      -webkit-animation-name: blinking-dot;
-      -moz-animation-name: blinking-dot;
-      -o-animation-name: blinking-dot;
-      animation-duration: 2s;
-      -webkit-animation-duration: 2s;
-      -moz-animation-duration: 2s;
-      -o-animation-duration: 2s;
-      animation-iteration-count: infinite;
-      -webkit-animation-iteration-count: infinite;
-      -moz-animation-iteration-count: infinite;
-      -o-animation-iteration-count: infinite;
-    }
-
-    .text-indication-of-audio-playing span:nth-child(2) {
-      animation-delay: .4s;
-      -webkit-animation-delay: .4s;
-      -moz-animation-delay: .4s;
-      -o-animation-delay: .4s;
-    }
-
-    .text-indication-of-audio-playing span:nth-child(3) {
-      animation-delay: .8s;
-      -webkit-animation-delay: .8s;
-      -moz-animation-delay: .8s;
-      -o-animation-delay: .8s;
-    }
-
-    /* The animation code */
-    @keyframes blinking-dot {
-      0% {
-        opacity: 0;
-      }
-      50% {
-        opacity: 1;
-      }
-      100% {
-        opacity: 0;
-      }
-    }
-
-    /* The animation code */
-    @-webkit-keyframes blinking-dot {
-      0% {
-        opacity: 0;
-      }
-      50% {
-        opacity: 1;
-      }
-      100% {
-        opacity: 0;
-      }
-    }
-
-    /* The animation code */
-    @-moz-keyframes blinking-dot {
-      0% {
-        opacity: 0;
-      }
-      50% {
-        opacity: 1;
-      }
-      100% {
-        opacity: 0;
-      }
-    }
-
-    /* The animation code */
-    @-o-keyframes blinking-dot {
-      0% {
-        opacity: 0;
-      }
-      50% {
-        opacity: 1;
-      }
-      100% {
-        opacity: 0;
-      }
-    }
     /* END OF Audio Recording UI */
 
     @media print {
@@ -1652,17 +1546,13 @@
       divNode.setAttribute("contenteditable", "false");
       divNode.innerHTML = `
         <div class="audio-recording-container">
-          <b class="start-recording-button" aria-hidden="true">🎤</b>
-          <div class="recording-control-buttons-container hide">
-            <b class="cancel-recording-button" aria-hidden="true">❌</b>
+          <div class="recording-control-buttons-container">
+            <b class="cancel-recording-button" aria-hidden="true">✖</b>
             <div class="recording-elapsed-time">
               <b class="red-recording-dot" aria-hidden="true">🔴</b>
               <p class="elapsed-time"></p>
             </div>
-            <b class="stop-recording-button fa fa-stop-circle-o" aria-hidden="true">S</b>
-          </div>
-          <div class="text-indication-of-audio-playing-container">
-            <p class="text-indication-of-audio-playing hide">Audio is playing<span>.</span><span>.</span><span>.</span></p>
+            <b class="stop-recording-button" aria-hidden="true">✓</b>
           </div>
         </div>
         <audio controls class="audio-element hide"></audio>`;
@@ -1673,7 +1563,6 @@
       } else {
         return;
       }
-      const microphoneButton = document.querySelectorAll(`#${strArId} .start-recording-button`)[0];
       const recordingControlButtonsContainer = document.querySelectorAll(`#${strArId} .recording-control-buttons-container`)[0];
       const stopRecordingButton = document.querySelectorAll(`#${strArId} .stop-recording-button`)[0];
       const cancelRecordingButton = document.querySelectorAll(`#${strArId} .cancel-recording-button`)[0];
@@ -1681,7 +1570,6 @@
       const audioElement = document.querySelectorAll(`#${strArId} .audio-element`)[0];
       const audioSources = audioElement.getElementsByTagName("source");
       let audioElementSource = audioSources.length > 0 ? audioSources[0] : null;
-      const textIndicatorOfAudioPlaying = document.querySelectorAll(`#${strArId} .text-indication-of-audio-playing`)[0];
 
       // Audio Controller
 
@@ -1705,8 +1593,6 @@
 
         if (recorderAudioIsPlaying) {
           audioElement.pause();
-          // also hide the audio playing indicator displayed on the screen
-          hideTextIndicatorOfAudioPlaying();
         }
 
         // start recording using the audio recording API
@@ -1715,9 +1601,7 @@
 
             // store the recording start time to display the elapsed time according to it
             audioRecordStartTime = new Date();
-
-            // display control buttons to offer the functionality of stop and cancel
-            handleDisplayingRecordingControlButtons();
+            handleElapsedRecordingTime();
           })
           .catch(error => { // on error
             // No Browser Support Error
@@ -1827,9 +1711,6 @@
           // play the audio after successfully setting new src and type that corresponds to the recorded audio
           console.log("Playing audio...");
           audioElement.play();
-
-          // display text indicator of having the audio play in the background
-          displayTextIndicatorOfAudioPlaying();
         };
 
         //read content and convert it to a URL (base64)
@@ -1930,22 +1811,8 @@
         }
       }
 
-      /** Displays recording control buttons */
-      function handleDisplayingRecordingControlButtons() {
-        // Hide the microphone button that starts audio recording
-        microphoneButton.style.display = "none";
-
-        // Display the recording control buttons
-        recordingControlButtonsContainer.classList.remove("hide");
-
-        // Handle the displaying of the elapsed recording time
-        handleElapsedRecordingTime();
-      }
-
       /** Hide the displayed recording control buttons */
       function handleHidingRecordingControlButtons() {
-        // Display the microphone button that starts audio recording
-        microphoneButton.style.display = "block";
 
         // Hide the recording control buttons
         recordingControlButtonsContainer.classList.add("hide");
@@ -1961,20 +1828,7 @@
         audioElementSource = sourceElement;
       }
 
-      /** Display the text indicator of the audio being playing in the background */
-      function displayTextIndicatorOfAudioPlaying() {
-        textIndicatorOfAudioPlaying.classList.remove("hide");
-      }
-
-      /** Hide the text indicator of the audio being playing in the background */
-      function hideTextIndicatorOfAudioPlaying() {
-        textIndicatorOfAudioPlaying.classList.add("hide");
-      }
-
-      //Listeners
-
-      // Listen to start recording button
-      microphoneButton.onclick = startAudioRecording;
+      // Listeners
 
       // Listen to stop recording button
       stopRecordingButton.onclick = stopAudioRecording;
@@ -1983,7 +1837,11 @@
       cancelRecordingButton.onclick = cancelAudioRecording;
 
       // Listen to when the audio being played ends
-      audioElement.onended = hideTextIndicatorOfAudioPlaying;
+      audioElement.onended = function () {
+
+      };
+
+      startAudioRecording();
     }
 
     function loadAllReferencedDocuments() {
