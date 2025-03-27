@@ -445,7 +445,7 @@
 
     .x-remover {
       background-color: #aaa;
-      padding: 6px 9px;
+      padding: 6.5px 6.7px 3.8px 6.5px;
       color: #ff3b30;
       display: none;
       position: absolute;
@@ -459,7 +459,7 @@
       text-align: center;
       line-height: 20px;
       font-family: sans-serif;
-      cursor: default;
+      cursor: pointer;
     }
 
     .embedded-local-image:hover .x-remover,
@@ -1513,7 +1513,7 @@
     function createRemover(callback = null) {
 
       const divNode = document.createElement("div");
-      divNode.innerText = "✕";
+      divNode.innerText = "❌";
       divNode.addEventListener('click', function (e) {
 
         const parentNode = e.target?.parentNode;
@@ -1655,9 +1655,9 @@
         <div class="audio-recording-container">
           <b class="start-recording-button" aria-hidden="true" style="font-size: 36px;">🎤</b>
           <div class="recording-control-buttons-container hide">
-            <b class="cancel-recording-button fa fa-times-circle-o" aria-hidden="true" style="font-size: 36px;"></b>
+            <b class="cancel-recording-button" aria-hidden="true" style="font-size: 36px;">❌</b>
             <div class="recording-elapsed-time">
-              <b class="red-recording-dot fa fa-circle" aria-hidden="true" style="font-size: 36px;"></b>
+              <b class="red-recording-dot" aria-hidden="true" style="font-size: 36px;">🔴</b>
               <p class="elapsed-time"></p>
             </div>
             <b class="stop-recording-button fa fa-stop-circle-o" aria-hidden="true" style="font-size: 36px;"></b>
