@@ -1423,14 +1423,14 @@
 
     function removeDocumentNodes(html) {
 
-      const template = document.createElement('template');
+      const template = document.createElement("template");
       template.innerHTML = html;
 
-      template.content.querySelectorAll('.embedded-local-epub').forEach(el => {
+      template.content.querySelectorAll(".embedded-local-epub").forEach(el => {
         el.replaceChildren();
       });
 
-      /*template.content.querySelectorAll('.embedded-local-pdf').forEach(el => {
+      /*template.content.querySelectorAll(".embedded-local-pdf").forEach(el => {
         el.replaceChildren();
       });*/
 
@@ -1514,7 +1514,7 @@
 
       const divNode = document.createElement("div");
       divNode.innerText = "❌";
-      divNode.addEventListener('click', function (e) {
+      divNode.addEventListener("click", function (e) {
 
         const parentNode = e.target?.parentNode;
 
@@ -1818,7 +1818,7 @@
 
           // set the type of the audio element based on the recorded audio's Blob type
           let BlobType = recorderAudioAsBlob.type.includes(";") ?
-            recorderAudioAsBlob.type.substr(0, recorderAudioAsBlob.type.indexOf(';')) : recorderAudioAsBlob.type;
+            recorderAudioAsBlob.type.substr(0, recorderAudioAsBlob.type.indexOf(";")) : recorderAudioAsBlob.type;
           audioElementSource.type = BlobType
 
           // call the load method as it is used to update the audio element after changing the source or other settings
@@ -1988,12 +1988,12 @@
 
     function loadAllReferencedDocuments() {
 
-      document.querySelectorAll('.embedded-local-epub').forEach(async el => {
+      document.querySelectorAll(".embedded-local-epub").forEach(async el => {
         const dataUrl = el.getAttribute("data-epub");
         await loadEpub(dataUrl, null, el);
       });
 
-      /*document.querySelectorAll('.embedded-local-pdf').forEach(async el => {
+      /*document.querySelectorAll(".embedded-local-pdf").forEach(async el => {
         const dataUrl = el.getAttribute("data-pdf");
         await loadPdf(dataUrl, null, el);
       });*/
@@ -2390,19 +2390,19 @@
     // Toggle dropdown visibility
     function toggleDropdown(id) {
       const dropdown = document.getElementById(id);
-      if (dropdown.classList.contains('show')) {
-        dropdown.classList.remove('show');
+      if (dropdown.classList.contains("show")) {
+        dropdown.classList.remove("show");
       } else {
         // Close any open dropdowns first
-        document.querySelectorAll('.dropdown-content').forEach(el => el.classList.remove('show'));
-        dropdown.classList.add('show');
+        document.querySelectorAll(".dropdown-content").forEach(el => el.classList.remove("show"));
+        dropdown.classList.add("show");
       }
     }
 
     // Close dropdowns if clicking outside
-    document.addEventListener('click', function (e) {
-      if (!e.target.closest('.dropdown')) {
-        document.querySelectorAll('.dropdown-content').forEach(el => el.classList.remove('show'));
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest(".dropdown")) {
+        document.querySelectorAll(".dropdown-content").forEach(el => el.classList.remove("show"));
       }
     });
 
@@ -2494,7 +2494,7 @@
       const selection = window.getSelection();
       if (!selection.rangeCount || selection.isCollapsed) return;
       const range = selection.getRangeAt(0);
-      const editor = document.getElementById('editor');
+      const editor = document.getElementById("editor");
       if (!editor.contains(range.commonAncestorContainer)) return;
       wrapRangeText(range, tagName);
       selection.removeAllRanges();
@@ -2505,7 +2505,7 @@
       const selection = window.getSelection();
       if (!selection.rangeCount || selection.isCollapsed) return;
       const range = selection.getRangeAt(0);
-      const editor = document.getElementById('editor');
+      const editor = document.getElementById("editor");
       if (!editor.contains(range.commonAncestorContainer)) return;
       wrapRangeText(range, 'span', styleString);
       selection.removeAllRanges();
@@ -2516,7 +2516,7 @@
       const selection = window.getSelection();
       if (!selection.rangeCount || selection.isCollapsed) return;
       const range = selection.getRangeAt(0);
-      const editor = document.getElementById('editor');
+      const editor = document.getElementById("editor");
       if (!editor.contains(range.commonAncestorContainer)) return;
       const url = prompt("URL")?.trim();
       if (!url) return;
@@ -2549,7 +2549,7 @@
       const selection = window.getSelection();
       if (!selection.rangeCount) return;
       let node = selection.anchorNode;
-      const editor = document.getElementById('editor');
+      const editor = document.getElementById("editor");
       while (node && node.parentNode !== editor) {
         if (NON_STYLABLE_NODE_NAMES.includes(node.nodeName)) return;
         node = node.parentNode;
@@ -2560,7 +2560,7 @@
       while (node.firstChild) {
         if (
           node.firstChild.nodeType === Node.ELEMENT_NODE &&
-          node.firstChild.matches('p') &&
+          node.firstChild.matches("p") &&
           tag.match(/^H[1-6]$/)
         ) {
           let child = node.firstChild;
@@ -2582,7 +2582,7 @@
 
     // Splits the current block at the caret.
     function splitBlock() {
-      const editor = document.getElementById('editor');
+      const editor = document.getElementById("editor");
       const selection = window.getSelection();
       if (!selection.rangeCount) return;
       const range = selection.getRangeAt(0);
@@ -2592,8 +2592,8 @@
         block = block.parentNode;
       }
       if (!block) {
-        const p = document.createElement('p');
-        p.innerHTML = '<br>';
+        const p = document.createElement("p");
+        p.innerHTML = "<br>";
         editor.appendChild(p);
         setCaret(p, 0);
         return;
@@ -2610,8 +2610,8 @@
       });
 
       if (isAtEnd) {
-        const newBlock = document.createElement('p');
-        newBlock.innerHTML = '<br>';
+        const newBlock = document.createElement("p");
+        newBlock.innerHTML = "<br>";
         if (block.nextSibling) {
           editor.insertBefore(newBlock, block.nextSibling);
         } else {
@@ -2619,12 +2619,12 @@
         }
         setCaret(newBlock, 0);
       } else {
-        const newBlock = document.createElement('p');
+        const newBlock = document.createElement("p");
         const extractRange = range.cloneRange();
         extractRange.setEndAfter(block.lastChild || block);
         const extracted = extractRange.extractContents();
         if (!extracted.childNodes.length) {
-          newBlock.innerHTML = '<br>';
+          newBlock.innerHTML = "<br>";
         } else {
           newBlock.appendChild(extracted);
         }
@@ -2636,22 +2636,22 @@
         setCaret(newBlock, 0);
       }
 
-      if (!block.textContent.trim() && !block.querySelector('img, video, iframe, embed, object')) {
-        block.innerHTML = '<br>';
+      if (!block.textContent.trim() && !block.querySelector("img, video, iframe, embed, object")) {
+        block.innerHTML = "<br>";
       }
     }
 
     // Normalize stray text nodes and nested blocks.
     function normalizeEditor() {
-      const editor = document.getElementById('editor');
+      const editor = document.getElementById("editor");
       Array.from(editor.childNodes).forEach(node => {
         if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
-          const p = document.createElement('p');
+          const p = document.createElement("p");
           p.textContent = node.textContent;
           editor.replaceChild(p, node);
         }
       });
-      editor.querySelectorAll('p p, h1 p, h2 p, h3 p, h4 p, h5 p, h6 p, p font, small p').forEach(nested => {
+      editor.querySelectorAll("p p, h1 p, h2 p, h3 p, h4 p, h5 p, h6 p, p font, small p").forEach(nested => {
         const parent = nested.parentNode;
         while (nested.firstChild) {
           parent.insertBefore(nested.firstChild, nested);
@@ -2662,7 +2662,7 @@
 
     // Normalize stray text nodes and nested blocks.
     function cleanEditor() {
-      const editor = document.getElementById('editor');
+      const editor = document.getElementById("editor");
       if (editor.firstChild && ["H1", "H2", "H3", "H4", "H5", "H6", "P"].includes(editor.firstChild.nodeName)) {
         return;
       }
@@ -2691,7 +2691,7 @@
 
     function keydownHandler(e) {
 
-      if (e.key === 'Enter' && !e.shiftKey) {
+      if (e.key === "Enter" && !e.shiftKey) {
 
         const selection = window.getSelection();
 
@@ -2821,12 +2821,12 @@
       }
     };
 
-    let editor = document.getElementById('editor');
-    let filename = document.getElementById('filename');
+    let editor = document.getElementById("editor");
+    let filename = document.getElementById("filename");
 
-    editor.addEventListener('keydown', keydownHandler);
-    editor.addEventListener('click', clickHandler);
-    editor.addEventListener('blur', normalizeEditor);
+    editor.addEventListener("keydown", keydownHandler);
+    editor.addEventListener("click", clickHandler);
+    editor.addEventListener("blur", normalizeEditor);
     editor.addEventListener("input", cleanEditor);
     editor.addEventListener("focus", cleanEditor);
 
