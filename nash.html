@@ -369,6 +369,34 @@
       margin: 20px 0;
     }
 
+    .link-pdf {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 20px 0;
+    }
+
+    .embedded-table {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 10px 0;
+    }
+
+    .embedded-table table {
+      width: 100%;
+      height: auto;
+      /*display: block;*/
+      margin: 0 0;
+      text-align: left;
+      table-layout:fixed;
+    }
+
+    .embedded-table table th,
+    .embedded-table table td {
+      overflow: hidden;
+    }
+
     .thin-line::before {
       content: "";
       display: block;
@@ -383,6 +411,7 @@
     .embedded-local-pdf,
     .embedded-local-image,
     .embedded-local-audio,
+    .embedded-table,
     .image-link,
     .audio-link,
     .video-link,
@@ -412,12 +441,13 @@
 
     .embedded-local-image:hover .x-remover,
     .embedded-local-audio:hover .x-remover,
+    .embedded-local-epub:hover .x-remover,
+    .embedded-local-pdf:hover .x-remover,
+    .embedded-table:hover .x-remover,
     .image-link:hover .x-remover,
     .audio-link:hover .x-remover,
     .video-link:hover .x-remover,
-    .pdf-link:hover .x-remover,
-    .embedded-local-epub:hover .x-remover,
-    .embedded-local-pdf:hover .x-remover {
+    .pdf-link:hover .x-remover {
       display: block;
     }
 
@@ -521,6 +551,8 @@
       <input type="file" id="pdfUpload" accept="pdf/*" onclick="this.value = null">
 
       <button id="btnPdfLink" title="Insert PDF link">🔗<b>PDF</b></button>
+      <button id="btnTable" title="Add table"><b>Table</b></button>
+      <button id="btnHeadlessTable" title="Add headless table"><b>H Table</b></button>
 
       <div id="splitbar">|</div>
       <!-- Block conversion -->
@@ -1404,9 +1436,8 @@
 
         element?.replaceChildren();
         const divNode = element || document.createElement("div");
-        divNode.appendChild(createRemover());
         divNode.setAttribute("class", "embedded-local-pdf");
-        divNode.setAttribute("contenteditable", "true");
+        divNode.setAttribute("contenteditable", "false");
         //divNode.setAttribute("data-pdf", pdfData);
 
         let strPdfId = divNode.getAttribute("id");
@@ -1428,6 +1459,7 @@
             pagemode: "thumbs"
           }
         });
+        divNode.appendChild(createRemover());
       }
     }
 
@@ -1437,9 +1469,8 @@
       if (!url) return;
       const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
       const divNode = document.createElement("div");
-      divNode.appendChild(createRemover());
       divNode.setAttribute("class", "pdf-link");
-      divNode.setAttribute("contenteditable", "true");
+      divNode.setAttribute("contenteditable", "false");
 
       const pdfId = generateUId();
       const strPdfId = `pdf${pdfId}`;
@@ -1455,6 +1486,98 @@
           pagemode: "thumbs"
         }
       });
+      divNode.appendChild(createRemover());
+    }
+
+    function insertTable(headless) {
+
+      const dims = prompt((headless ? "Headless table" : "Table") + " rows and columns")?.trim();
+      if (!dims) return;
+      // Split the input into the number of rows and columns
+      let r1 = -1, r2 = -1, c1 = -1, c2 = -1, i = 0, l = dims.length;
+      
+      while (i < l) {
+
+        if (dims[i] >= '0' && dims[i] <= '9') {
+          if (r1 < 0) {
+            r1 = i++;
+            continue;
+          }
+
+          if (r2 > -1) {
+            if (c1 < 0) {
+              c1 = i++;
+              continue;
+            }
+          }
+        } else {
+          if (r1 > -1) {
+            if (r2 < 0) {
+              r2 = i++;
+              continue;
+            }
+
+            if (c1 > -1) {
+              if (c2 < 0) {
+                c2 = i++;
+                break;
+              }
+            }
+          }
+        }
+        ++i;
+      }
+
+      if (r1 < 0 || r2 < 0 || r1 === r2 || c1 < 0 || c1 === c2) {
+        alert("Invalid input.");
+        return;
+      }
+
+      if (c2 < 0) {
+        c2 = l;
+      }
+      let rows = parseInt(dims.substring(r1, r2));
+      const cols = parseInt(dims.substring(c1, c2));
+
+      if (rows < 1 || cols < 1) {
+        alert("Invalid input.");
+        return;
+      }
+      let thead = "";
+
+      if (!headless) {
+        --rows;
+
+        for (let i = 0; i < cols; ++i) {
+          thead += `\n<th scope="col">Column ${i + 1}</th>`;
+        }
+        thead = "<thead>\n<tr>" + thead + "\n</tr>\n</thead>";
+      }
+      let tbody = "";
+
+      for (let i = 0; i < rows; ++i) {
+        let tr = "";
+
+        for (let j = 0; j < cols; ++j) {
+          tr += `\n<td>${i + 1} ${j + 1}</td>`;
+        }
+        tr = "<tr>" + tr + "\n</tr>";
+        tbody += `\n${tr}`;
+      }
+      tbody = "<tbody>" + tbody + "\n</tbody>";
+
+      const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
+      const divNode = document.createElement("div");
+      divNode.setAttribute("class", "embedded-table");
+      divNode.setAttribute("contenteditable", "true");
+
+      const tableId = generateUId();
+      const strTableId = `table${tableId}`;
+      divNode.setAttribute("id", strTableId);
+      divNode.innerHTML = ["<table>", thead, tbody, "</table>"].join("\n");
+
+      editor.insertBefore(divNode, nextSibling);
+      divNode.appendChild(createRemover());
     }
 
     function insertText() {
@@ -1992,6 +2115,8 @@
     document.getElementById("pdfUpload").addEventListener("change", (e) => insertPdf(e));
 
     document.getElementById("btnPdfLink").addEventListener("click", (e) => insertPdfLink());
+    document.getElementById("btnTable").addEventListener("click", (e) => insertTable(false));
+    document.getElementById("btnHeadlessTable").addEventListener("click", (e) => insertTable(true));
 
     document.getElementById("btnSaveMenu").addEventListener("click", (e) => toggleDropdown("saveDropdown"));
     document.getElementById("btnSave").addEventListener("click", (e) => {

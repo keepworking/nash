@@ -20,6 +20,7 @@ Features:
 - Epub embedding
 - Pdf embedding
 - Pdf link embedding
+- Tables
 
 TODO:
 - Undo and redo (most important)
@@ -36,10 +37,10 @@ TODO:
 - Better text editing
 - Font selection and embedding
 - Better icons
-- Tables
 - Lists (todos)
 - Data sources embedding
 - Drawing canvas
+- Table customization
 - Tags
 - MathML
 - Text effects
