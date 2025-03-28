@@ -1557,7 +1557,7 @@
       let audioRecordStartTime = null;
 
       /** Stores the maximum recording time in hours to stop recording once maximum recording hour has been reached */
-      let maximumRecordingTimeInHours = 1;
+      const maximumRecordingTimeInHours = 1;
 
       /** Stores the reference of the setInterval function that controls the timer in audio recording*/
       let elapsedTimeTimer = null;
@@ -1569,7 +1569,7 @@
 
         const audioElements = document.querySelectorAll(`#${strArId} .audio-element`);
 
-        for (audioElement in audioElements) {
+        for (let audioElement of audioElements) {
 
           // If a previous audio recording is playing, pause it
 
@@ -1590,7 +1590,6 @@
             // No Browser Support Error
             if (error.message.includes("mediaDevices API or getUserMedia method is not supported in this browser.")) {
               console.log("To record audio, use browsers like Chrome and Firefox.");
-              cancelAudioRecording();
               alert("To record audio, use browsers like Chrome and Firefox.");
             }
 
@@ -1623,6 +1622,7 @@
               default:
                 console.log("An error occured with the error name " + error.name);
             };
+            cancelAudioRecording();
           });
       }
       /** Stop the currently started audio recording & sends it
@@ -1634,11 +1634,12 @@
         // stop the recording using the audio recording API
         audioRecorder.stop()
           .then(audioAsblob => {
-            //  Play recorder audio
-            playAudio(audioAsblob);
 
-            // hide recording control button & return record icon
+            // hide recording control buttons
             handleHidingRecordingControlButtons();
+
+            // play recorder audio
+            playAudio(audioAsblob);
           })
           .catch(error => {
             // Error handling structure
@@ -1649,6 +1650,7 @@
               default:
                 console.log("An error occured with the error name " + error.name);
             };
+            cancelAudioRecording();
           });
       }
 
@@ -1659,6 +1661,12 @@
 
         // cancel the recording using the audio recording API
         audioRecorder.cancel();
+
+        // stop interval that handles both time elapsed and the red dot
+        if (elapsedTimeTimer) {
+          clearInterval(elapsedTimeTimer);
+          elapsedTimeTimer = null;
+        }
 
         if (editor.contains(divNode)) editor.removeChild(divNode);
       }
@@ -1709,7 +1717,7 @@
         // create an interval that compute & displays elapsed time, as well as, animate red dot - every second
         elapsedTimeTimer = setInterval(() => {
           // compute the elapsed time every second
-          let elapsedTime = computeElapsedTime(audioRecordStartTime); // pass the actual record start time
+          const elapsedTime = computeElapsedTime(audioRecordStartTime); // pass the actual record start time
           // display the elapsed time
           displayElapsedTimeDuringAudioRecording(elapsedTime);
         }, 1000); // every second
@@ -1741,9 +1749,9 @@
 
         // if it the elapsed time reach hours and also reach the maximum recording time in hours return true
         if (elapsedTimeSplitted.length === 3 && elapsedTimeSplitted[0] === maximumRecordingTimeInHoursAsString)
-            return true;
+          return true;
         else // otherwise, return false
-            return false;
+          return false;
       }
 
       /** Computes the elapsedTime since the moment the function is called in the format mm:ss or hh:mm:ss
@@ -1800,6 +1808,9 @@
 
         // Hide the recording control buttons
         recordingControlButtonsContainer.classList.add("hide");
+
+        // show the play interface
+        audioElement.classList.remove("hide");
 
         // stop interval that handles both time elapsed and the red dot
         clearInterval(elapsedTimeTimer);
