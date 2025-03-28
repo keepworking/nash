@@ -1854,22 +1854,12 @@
         const next = document.createElement("div");
         prev.setAttribute("id", `prev${epubId}`);
         next.setAttribute("id", `next${epubId}`);
+        prev.setAttribute("class", "non-selectable");
+        next.setAttribute("class", "non-selectable");
         prev.textContent = "<PREV";
         next.textContent = "NEXT>";
-        prev.style = "float: left; left: 0; margin: 5px 5px; cursor: pointer;\
-                      user-select: none;\
-                      -webkit-user-select: none;\
-                      -ms-user-select: none;\
-                      -webkit-touch-callout: none;\
-                      -o-user-select: none;\
-                      -moz-user-select: none;";
-        next.style = "float: right; right: 0; margin: 5px 5px; cursor: pointer;\
-                      user-select: none;\
-                      -webkit-user-select: none;\
-                      -ms-user-select: none;\
-                      -webkit-touch-callout: none;\
-                      -o-user-select: none;\
-                      -moz-user-select: none;";
+        prev.style = "float: left; left: 0; margin: 5px 5px; cursor: pointer;";
+        next.style = "float: right; right: 0; margin: 5px 5px; cursor: pointer;";
         prev.setAttribute("contenteditable", "false");
         next.setAttribute("contenteditable", "false");
         navButtons.appendChild(prev);
