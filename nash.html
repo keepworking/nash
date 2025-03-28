@@ -427,6 +427,7 @@
       height: 150px;
       margin: 10px 0;
       border-radius: 12px;
+      background-color: white;
     }
 
     .embedded-local-epub,
@@ -477,22 +478,6 @@
 
     /* Audio Recording UI */
 
-    .audio-recording-container {
-      width: 100%;
-      height: 100%;
-      background-color: white;
-      border-radius: 12px;
-      /*targeting Chrome & Safari*/
-      display: -webkit-flex;
-      /*targeting IE10*/
-      display: -ms-flex;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      /*horizontal centering*/
-      align-items: center;
-    }
-
     .recording-control-buttons-container {
       /*targeting Chrome & Safari*/
       display: -webkit-flex;
@@ -503,7 +488,8 @@
       /*horizontal centering*/
       align-items: center;
       width: 100%;
-      margin: 10px 0;
+      height: 100%;
+      margin: 10px 10px;
     }
 
     .cancel-recording-button,
@@ -607,10 +593,6 @@
       100% {
         opacity: 1;
       }
-    }
-
-    .elapsed-time {
-      font-size: 32px;
     }
 
     .recording-control-buttons-container.hide {
@@ -1266,7 +1248,7 @@
       /** Cancel audio recording*/
       cancel: function () {
         // stop the recording feature
-        audioRecorder.mediaRecorder.stop();
+        audioRecorder.mediaRecorder?.stop();
 
         // stop all the tracks on the active stream in order to stop the stream
         audioRecorder.stopStream();
@@ -1279,8 +1261,8 @@
        */
       stopStream: function () {
         // stopping the capturing request by stopping all the tracks on the active stream
-        audioRecorder.streamBeingCaptured.getTracks() //get all tracks from the stream
-          .forEach(track /*of type MediaStreamTrack*/ => track.stop()); //stop each one
+        audioRecorder.streamBeingCaptured?.getTracks() //get all tracks from the stream
+          ?.forEach(track /*of type MediaStreamTrack*/ => track.stop()); //stop each one
       },
       /** Reset all the recording properties including the media recorder and stream being captured*/
       resetRecordingProperties: function () {
@@ -1545,18 +1527,16 @@
       divNode.setAttribute("class", "audio-recording");
       divNode.setAttribute("contenteditable", "false");
       divNode.innerHTML = `
-        <div class="audio-recording-container">
-          <div class="recording-control-buttons-container">
-            <b class="cancel-recording-button" aria-hidden="true">✖</b>
-            <div class="recording-elapsed-time">
-              <b class="red-recording-dot" aria-hidden="true">🔴</b>
-              <p class="elapsed-time"></p>
-            </div>
-            <b class="stop-recording-button" aria-hidden="true">✓</b>
+        <div class="recording-control-buttons-container" contenteditable="false">
+          <b class="cancel-recording-button" contenteditable="false" aria-hidden="true">✖</b>
+          <div class="recording-elapsed-time" contenteditable="false">
+            <b class="red-recording-dot" contenteditable="false" aria-hidden="true">🔴</b>
+            <p class="elapsed-time" style="font-size: 32px;" contenteditable="false">00:00</p>
           </div>
+          <b class="stop-recording-button" contenteditable="false" aria-hidden="true">✓</b>
         </div>
         <audio controls class="audio-element hide"></audio>`;
-      divNode.appendChild(createRemover());
+      divNode.appendChild(createRemover(function () { cancelAudioRecording(); }));
 
       if (audioRecorder.recordingState === MediaRecordingStatus.CLOSED) {
         editor.insertBefore(divNode, nextSibling);
@@ -1587,12 +1567,15 @@
 
         console.log("Recording Audio...");
 
-        // If a previous audio recording is playing, pause it
-        let recorderAudioIsPlaying = !audioElement.paused; // the paused property tells whether the media element is paused or not
-        console.log("paused?", !recorderAudioIsPlaying);
+        const audioElements = document.querySelectorAll(`#${strArId} .audio-element`);
 
-        if (recorderAudioIsPlaying) {
-          audioElement.pause();
+        for (audioElement in audioElements) {
+
+          // If a previous audio recording is playing, pause it
+
+          if (!audioElement.paused) {
+            audioElement.pause();
+          }
         }
 
         // start recording using the audio recording API
@@ -1607,6 +1590,7 @@
             // No Browser Support Error
             if (error.message.includes("mediaDevices API or getUserMedia method is not supported in this browser.")) {
               console.log("To record audio, use browsers like Chrome and Firefox.");
+              cancelAudioRecording();
               alert("To record audio, use browsers like Chrome and Firefox.");
             }
 
@@ -1670,13 +1654,13 @@
 
       /** Cancel the currently started audio recording */
       function cancelAudioRecording() {
+
         console.log("Canceling audio...");
 
         // cancel the recording using the audio recording API
         audioRecorder.cancel();
 
-        // hide recording control button & return record icon
-        handleHidingRecordingControlButtons();
+        if (editor.contains(divNode)) editor.removeChild(divNode);
       }
 
       /** Plays recorded audio using the audio element in the HTML document
