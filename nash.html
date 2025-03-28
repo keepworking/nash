@@ -433,6 +433,7 @@
 
     .audio-recording {
       width: 100%;
+      height: auto;
       margin: 10px 0;
       border-radius: 12px;
       background-color: white;
@@ -480,7 +481,7 @@
     .audio-link:hover .x-remover,
     .video-link:hover .x-remover,
     .pdf-link:hover .x-remover,
-    .audio-recording .x-remover {
+    .audio-recording:hover .x-remover {
       display: block;
     }
 
@@ -1574,6 +1575,11 @@
           if (!audioElement.paused) {
             audioElement.pause();
           }
+        }
+
+        if (audioRecorder.recordingState !== MediaRecordingStatus.CLOSED) {
+          editor.removeChild(audioRecordingNode);
+          return;
         }
 
         // start recording using the audio recording API
