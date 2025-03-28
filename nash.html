@@ -335,6 +335,15 @@
       color: var(--attribution-color);
     }
 
+    .non-selectable {
+      user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      -webkit-touch-callout: none;
+      -o-user-select: none;
+      -moz-user-select: none;
+    }
+
     img {
       max-width: 100%;
       height: auto;
@@ -424,7 +433,6 @@
 
     .audio-recording {
       width: 100%;
-      height: 150px;
       margin: 10px 0;
       border-radius: 12px;
       background-color: white;
@@ -488,13 +496,13 @@
       /*horizontal centering*/
       align-items: center;
       width: 100%;
-      height: 100%;
+      height: 100px;
       margin: 10px 10px;
     }
 
     .cancel-recording-button,
     .stop-recording-button {
-      font-size: 36px;
+      font-size: 32px;
       cursor: pointer;
     }
 
@@ -594,15 +602,6 @@
         opacity: 1;
       }
     }
-
-    .recording-control-buttons-container.hide {
-      display: none;
-    }
-
-    .audio-element.hide {
-      display: none;
-    }
-
     /* END OF Audio Recording UI */
 
     @media print {
@@ -1186,7 +1185,7 @@
         audioRecorder.recordingState = MediaRecordingStatus.INITIALIZING;
 
         // Feature Detection
-        if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
+        if (!(navigator?.mediaDevices && navigator.mediaDevices.getUserMedia)) {
           // Feature is not supported in browser
           // return a custom error
           audioRecorder.recordingState = MediaRecordingStatus.CLOSED;
@@ -1231,16 +1230,17 @@
         return new Promise(resolve => {
 
           // save audio type to pass to set the Blob type
-          let mimeType = audioRecorder.mediaRecorder.mimeType;
+          const mimeType = audioRecorder.mediaRecorder.mimeType;
 
           // listen to the stop event in order to create & return a single Blob object
           audioRecorder.mediaRecorder.addEventListener("stop", () => {
             // create a single blob object, as we might have gathered a few Blob objects that needs to be joined as one
-            let audioBlob = new Blob(audioRecorder.audioBlobs, { type: mimeType });
+            const audioBlob = new Blob(audioRecorder.audioBlobs, { type: mimeType });
             audioRecorder.recordingState = MediaRecordingStatus.CLOSED;
             
             // resolve promise with the single audio blob representing the recorded audio
             resolve(audioBlob);
+            audioRecorder.cancel();
           });
           audioRecorder.cancel();
         });
@@ -1270,6 +1270,7 @@
         audioRecorder.mediaRecorder = null;
         audioRecorder.streamBeingCaptured = null;
         audioRecorder.recordingState = MediaRecordingStatus.CLOSED;
+        audioRecorder.audioBlobs = [];
 
         /*No need to remove event listeners attached to mediaRecorder as
         If a DOM element which is removed is reference-free (no references pointing to it), the element itself is picked
@@ -1403,7 +1404,7 @@
           }
         }
       }, false);
-      divNode.setAttribute("class", "x-remover");
+      divNode.setAttribute("class", "x-remover non-selectable");
       divNode.setAttribute("contenteditable", "false");
       return divNode;
     }
@@ -1522,24 +1523,25 @@
       const nextSibling = getTopLevelNodeOfCurrentPosition()?.nextSibling;
       const arId = generateUId();
       const strArId = `ar${arId}`;
-      const divNode = document.createElement("div");
-      divNode.setAttribute("id", strArId);
-      divNode.setAttribute("class", "audio-recording");
-      divNode.setAttribute("contenteditable", "false");
-      divNode.innerHTML = `
-        <div class="recording-control-buttons-container" contenteditable="false">
-          <b class="cancel-recording-button" contenteditable="false" aria-hidden="true">✖</b>
+      const audioRecordingNode = document.createElement("div");
+      audioRecordingNode.setAttribute("id", strArId);
+      audioRecordingNode.setAttribute("class", "audio-recording");
+      audioRecordingNode.setAttribute("contenteditable", "false");
+      const audioRecordingControlsNode = document.createElement("div");
+      audioRecordingControlsNode.setAttribute("class", "recording-control-buttons-container");
+      audioRecordingControlsNode.setAttribute("contenteditable", "false");
+      audioRecordingControlsNode.innerHTML = `
+          <b class="cancel-recording-button non-selectable" contenteditable="false" aria-hidden="true">✖</b>
           <div class="recording-elapsed-time" contenteditable="false">
-            <b class="red-recording-dot" contenteditable="false" aria-hidden="true">🔴</b>
-            <p class="elapsed-time" style="font-size: 32px;" contenteditable="false">00:00</p>
+            <b class="red-recording-dot non-selectable" contenteditable="false" aria-hidden="true">🔴</b>
+            <p class="elapsed-time non-selectable" style="font-size: 28px;" contenteditable="false">00:00</p>
           </div>
-          <b class="stop-recording-button" contenteditable="false" aria-hidden="true">✓</b>
-        </div>
-        <audio controls class="audio-element hide"></audio>`;
-      divNode.appendChild(createRemover(function () { cancelAudioRecording(); }));
+          <b class="stop-recording-button non-selectable" contenteditable="false" aria-hidden="true">✓</b>`;
+      audioRecordingNode.appendChild(audioRecordingControlsNode);
+      audioRecordingNode.appendChild(createRemover(function () { cancelAudioRecording(); }));
 
       if (audioRecorder.recordingState === MediaRecordingStatus.CLOSED) {
-        editor.insertBefore(divNode, nextSibling);
+        editor.insertBefore(audioRecordingNode, nextSibling);
       } else {
         return;
       }
@@ -1547,9 +1549,6 @@
       const stopRecordingButton = document.querySelectorAll(`#${strArId} .stop-recording-button`)[0];
       const cancelRecordingButton = document.querySelectorAll(`#${strArId} .cancel-recording-button`)[0];
       const elapsedTimeTag = document.querySelectorAll(`#${strArId} .elapsed-time`)[0];
-      const audioElement = document.querySelectorAll(`#${strArId} .audio-element`)[0];
-      const audioSources = audioElement.getElementsByTagName("source");
-      let audioElementSource = audioSources.length > 0 ? audioSources[0] : null;
 
       // Audio Controller
 
@@ -1567,12 +1566,11 @@
 
         console.log("Recording Audio...");
 
-        const audioElements = document.querySelectorAll(`#${strArId} .audio-element`);
+        const audioElements = document.querySelectorAll("audio");
 
         for (let audioElement of audioElements) {
 
           // If a previous audio recording is playing, pause it
-
           if (!audioElement.paused) {
             audioElement.pause();
           }
@@ -1635,11 +1633,8 @@
         audioRecorder.stop()
           .then(audioAsblob => {
 
-            // hide recording control buttons
-            handleHidingRecordingControlButtons();
-
-            // play recorder audio
-            playAudio(audioAsblob);
+            handleRecordingEnd();
+            showAudioPlay(audioAsblob);
           })
           .catch(error => {
             // Error handling structure
@@ -1661,51 +1656,28 @@
 
         // cancel the recording using the audio recording API
         audioRecorder.cancel();
+        handleRecordingEnd();
 
-        // stop interval that handles both time elapsed and the red dot
-        if (elapsedTimeTimer) {
-          clearInterval(elapsedTimeTimer);
-          elapsedTimeTimer = null;
-        }
-
-        if (editor.contains(divNode)) editor.removeChild(divNode);
+        if (editor.contains(audioRecordingNode)) editor.removeChild(audioRecordingNode);
       }
 
-      /** Plays recorded audio using the audio element in the HTML document
+      /** Shows the audio play interface for playing the recorded audio using the audio element in the HTML document
        * @param {Blob} recorderAudioAsBlob - recorded audio as a Blob Object 
       */
-      function playAudio(recorderAudioAsBlob) {
+      function showAudioPlay(recorderAudioAsBlob) {
 
         // read content of files (Blobs) asynchronously
         let reader = new FileReader();
 
         // once content has been read
         reader.onload = (e) => {
-          // store the base64 URL that represents the URL of the recording audio
-          let base64URL = e.target.result;
 
-          // If this is the first audio playing, create a source element
-          // as pre populating the HTML with a source of empty src causes error
-          if (!audioElementSource) // if its not defined create it (happens first time only)
-            createSourceForAudioElement();
-
-          // set the audio element's source using the base64 URL
-          audioElementSource.src = base64URL;
-
-          // set the type of the audio element based on the recorded audio's Blob type
-          let BlobType = recorderAudioAsBlob.type.includes(";") ?
-            recorderAudioAsBlob.type.substr(0, recorderAudioAsBlob.type.indexOf(";")) : recorderAudioAsBlob.type;
-          audioElementSource.type = BlobType
-
-          // call the load method as it is used to update the audio element after changing the source or other settings
-          audioElement.load();
-
-          // play the audio after successfully setting new src and type that corresponds to the recorded audio
-          console.log("Playing audio...");
-          audioElement.play();
+          audioRecordingNode.innerHTML = `<audio controls src="${e.target.result}"></audio>`;
+          audioRecordingNode.appendChild(createRemover());
+          document.querySelectorAll(`#${strArId} audio`)[0].load();
         };
 
-        //read content and convert it to a URL (base64)
+        // read content and convert it to a URL (base64)
         reader.readAsDataURL(recorderAudioAsBlob);
       }
 
@@ -1804,23 +1776,14 @@
       }
 
       /** Hide the displayed recording control buttons */
-      function handleHidingRecordingControlButtons() {
-
-        // Hide the recording control buttons
-        recordingControlButtonsContainer.classList.add("hide");
-
-        // show the play interface
-        audioElement.classList.remove("hide");
+      function handleRecordingEnd() {
 
         // stop interval that handles both time elapsed and the red dot
-        clearInterval(elapsedTimeTimer);
-      }
-
-      /** Creates a source element for the the audio element in the HTML document*/
-      function createSourceForAudioElement() {
-        let sourceElement = document.createElement("source");
-        audioElement.appendChild(sourceElement);
-        audioElementSource = sourceElement;
+        if (elapsedTimeTimer) {
+          clearInterval(elapsedTimeTimer);
+          elapsedTimeTimer = null;
+          console.log("Recording timer stopped.");
+        }
       }
 
       // Listeners
@@ -1831,12 +1794,11 @@
       // Listen to cancel recording button
       cancelRecordingButton.onclick = cancelAudioRecording;
 
-      // Listen to when the audio being played ends
-      audioElement.onended = function () {
-
-      };
-
-      startAudioRecording();
+      if (audioRecorder.recordingState === MediaRecordingStatus.CLOSED) {
+        startAudioRecording();
+      } else {
+        editor.removeChild(audioRecordingNode);
+      }
     }
 
     function loadAllReferencedDocuments() {
