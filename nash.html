@@ -26,6 +26,9 @@
       --code-bg-color: #e5e4e2;
       --code-text-color: #333;
 
+      --audio-recording-controls-bg-color: #e5e4e2;
+      --audio-recording-controls-text-color: #333;
+
       /* text background colors */
       --note-text-color-1: #000000;
       /* black */
@@ -79,6 +82,9 @@
 
         --code-bg-color: #36454f;
         --code-text-color: #fff;
+
+        --audio-recording-controls-bg-color: #36454f;
+        --audio-recording-controls-text-color: #fff;
 
         /*
                TODO: choose nicer colors :-)
@@ -435,8 +441,6 @@
       width: 100%;
       height: auto;
       margin: 20px 0;
-      border-radius: 12px;
-      background-color: white;
     }
 
     .embedded-local-epub,
@@ -498,7 +502,11 @@
       align-items: center;
       width: 100%;
       height: auto;
-      margin: 10px 10px;
+      margin: 0;
+      border-radius: 12px;
+      background-color: white;
+      background: var(--audio-recording-controls-bg-color);
+      color: var(--audio-recording-controls-text-color);
     }
 
     .cancel-recording-button,
