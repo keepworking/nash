@@ -553,40 +553,8 @@
     }
 
     // Wrap only the selected portions of text nodes.
-    // If selection is entirely within one text node, process it directly.
     function wrapRangeText(range, tagName, style, hook) {
-      const textNodes = [];
-      if (range.commonAncestorContainer.nodeType === Node.TEXT_NODE) {
-        textNodes.push(range.commonAncestorContainer);
-      } else {
-        const walker = document.createTreeWalker(
-          range.commonAncestorContainer,
-          NodeFilter.SHOW_TEXT,
-          {
-            acceptNode: function (node) {
-              return range.intersectsNode(node)
-                ? NodeFilter.FILTER_ACCEPT
-                : NodeFilter.FILTER_REJECT;
-            }
-          }
-        );
-        let node;
-        while (node = walker.nextNode()) {
-          textNodes.push(node);
-        }
-      }
-
-      textNodes.forEach(function (textNode) {
-        let start = 0, end = textNode.textContent.length;
-        if (textNode === range.startContainer) {
-          start = range.startOffset;
-        }
-        if (textNode === range.endContainer) {
-          end = range.endOffset;
-        }
-        if (start >= end) return;
-
-        const parent = textNode.parentNode;
+        const toWrap = range.extractContents();
         const wrapper = document.createElement(tagName);
         if (style) {
           wrapper.style.cssText = style;
@@ -594,20 +562,8 @@
         if (hook) {
           hook(wrapper);
         }
-        wrapper.textContent = textNode.textContent.substring(start, end);
-
-        const frag = document.createDocumentFragment();
-        const beforeText = textNode.textContent.substring(0, start);
-        const afterText = textNode.textContent.substring(end);
-        if (beforeText) {
-          frag.appendChild(document.createTextNode(beforeText));
-        }
-        frag.appendChild(wrapper);
-        if (afterText) {
-          frag.appendChild(document.createTextNode(afterText));
-        }
-        parent.replaceChild(frag, textNode);
-      });
+        wrapper.appendChild(toWrap);
+        range.insertNode(wrapper);
     }
 
     // Basic inline formatting: wraps the selection in the specified tag.
@@ -632,7 +588,7 @@
       selection.removeAllRanges();
     }
 
-    // Apply inline url 
+    // Apply inline url
     function applyURL() {
       const selection = window.getSelection();
       if (!selection.rangeCount || selection.isCollapsed) return;
