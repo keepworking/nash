@@ -431,6 +431,7 @@
       <div class="dropdown">
         <button onclick="toggleDropdown('saveDropdown')">💾</button>
         <div id="saveDropdown" class="dropdown-content">
+          <button onclick="toggleDropdown('saveDropdown'); saveToLocalStorage()">Save to Browser Storage</button>
           <button onclick="toggleDropdown('saveDropdown'); exportToFile(true, true)">Save</button>
           <button onclick="toggleDropdown('saveDropdown'); exportToFile(false, true)">Share</button>
           <button onclick="toggleDropdown('saveDropdown'); exportToFile(true, false)">Save as Read-Only</button>
@@ -468,6 +469,64 @@
         filename.contentEditable = "false";
         toolbar.style.display = "none";
       }
+    }
+
+    function saveToLocalStorage() {
+      const title = document.getElementById("filename").innerText.trim();
+      const editorContent = document.getElementById("editor").innerHTML;
+      const noteData = {
+        title: title || "Default",
+        content: editorContent,
+        lastSaved: new Date().toISOString()
+      };
+      
+      try {
+        localStorage.setItem('nash_default_note', JSON.stringify(noteData));
+        showSaveIndicator();
+        return true;
+      } catch (error) {
+        alert("Failed to save note: " + error.message);
+        return false;
+      }
+    }
+
+    function loadFromLocalStorage() {
+      try {
+        const savedData = localStorage.getItem('nash_default_note');
+        if (!savedData) return false;
+        
+        const noteData = JSON.parse(savedData);
+        document.getElementById("filename").innerText = noteData.title;
+        document.getElementById("editor").innerHTML = noteData.content;
+        updateTitle();
+        return true;
+      } catch (error) {
+        console.error("Failed to load note:", error);
+        return false;
+      }
+    }
+
+    function showSaveIndicator() {
+      const saveIndicator = document.createElement("div");
+      saveIndicator.textContent = "Saved to local storage";
+      saveIndicator.style.position = "fixed";
+      saveIndicator.style.bottom = "20px";
+      saveIndicator.style.right = "20px";
+      saveIndicator.style.background = "rgba(0, 0, 0, 0.7)";
+      saveIndicator.style.color = "#fff";
+      saveIndicator.style.padding = "10px 15px";
+      saveIndicator.style.borderRadius = "5px";
+      saveIndicator.style.zIndex = "9999";
+      saveIndicator.style.transition = "opacity 0.5s";
+      
+      document.body.appendChild(saveIndicator);
+      
+      setTimeout(() => {
+        saveIndicator.style.opacity = "0";
+        setTimeout(() => {
+          document.body.removeChild(saveIndicator);
+        }, 500);
+      }, 2000);
     }
 
     async function exportToFile(save, editMode) {
@@ -844,6 +903,19 @@
     window.addEventListener("beforeunload", unloadHandler);
 
     updateTitle();
+
+    // Add global keyboard shortcut listener for Ctrl+Alt+s
+    document.addEventListener('keydown', function(e) {
+      if ((e.ctrlKey || e.metaKey) && e.altKey && e.key === 's') {
+        e.preventDefault();
+        saveToLocalStorage();
+      }
+    });
+
+    // Load the default note on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      loadFromLocalStorage();
+    });
 
   </script>
 
